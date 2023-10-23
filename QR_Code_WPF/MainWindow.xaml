@@ -5,53 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QR_Code_WPF"
         mc:Ignorable="d"
-        Title="QR-Code" Height="650" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="450*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="2">
-            <Image x:Name="qrCodeImageElement" HorizontalAlignment="Left" Height="450"  VerticalAlignment="Top" Width="800"/>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Button Content="Создать QR-код" HorizontalAlignment="Center" VerticalAlignment="Center" Height="59" Width="248" Click="GenerateQRCode_Click"/>
-        </Grid>
+            Title="QR-Code" Height="475" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="475">
+
+    <ScrollViewer  VerticalScrollBarVisibility="Auto" SnapsToDevicePixels="True" Opacity="0.93">
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="350*"/>
-                <ColumnDefinition Width="450*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50*"/>
-                <RowDefinition Height="50*"/>
-            </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Введите текст для подписи:" FontSize="20" VerticalAlignment="Center" Height="49" Width="350"/>
-            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Публичный ключ для верификации:" FontSize="20" VerticalAlignment="Center" Height="49" Width="350" Grid.Row="1"/>
-            <TextBox Grid.Column="1" x:Name="inputTextBox" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="440" Height="48"/>
-            <TextBox Grid.Column="1" x:Name="publicKeyTextBox" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="440" Height="48"/>
+            <Grid   x:Name="settingsgrid" HorizontalAlignment="Right" Width="242" Background="#43000000">
 
+                <StackPanel x:Name="stackgrid">
+                    <Label x:Name="sttlbl" Content="Настройки" HorizontalAlignment="Center" Height="29" Margin="44,10,0,0" Width="87" VerticalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                    <Label x:Name="ecclabel" Content="ECC Уровень" Height="31" Margin="18,10,113,0" VerticalAlignment="Top" FontStyle="Italic" Foreground="White"/>
+                    <ComboBox x:Name="ecclevelbox" SelectedValuePath="Content" SelectedIndex="0" Height="22" Margin="20,8,20,0" VerticalAlignment="Center" Foreground="#FF191919"  HorizontalAlignment="Center" Width="202">
+                        <ComboBox.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                                <GradientStop Color="#CC0F0E0E" Offset="1"/>
+                            </LinearGradientBrush>
+                        </ComboBox.Background>
+                        <ComboBoxItem Content="L"/>
+                        <ComboBoxItem Content="M"/>
+                        <ComboBoxItem Content="Q"/>
+                        <ComboBoxItem Content="H"/>
+                    </ComboBox>
+                    <Button x:Name="foregroundpick"  Content="Qr-Code цвет" Height="28"  VerticalAlignment="Top" Margin="0,15,41,0" HorizontalAlignment="Right" Width="153" Foreground="White" Background="#80000000" Click="ChangeQRColor_Click" />
+
+                    <Button x:Name="grp" Content="Открыть и сканировать" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Margin="30.5,15,30.5,0" Width="181" Background="#A52329A6" Foreground="#FFF3F1F1" Click="OpenQR_Scan_Click" />
+                    <Button x:Name="backgroundpick"  Content="Сканировать через камеру" Height="28" Margin="0,15,41,0" HorizontalAlignment="Right" Width="159"  Foreground="#FF1D1B1B" Background="#80F5F1F1" Click="Video_Scan_Click"/>
+
+
+                </StackPanel>
+
+
+            </Grid>
+            <Grid x:Name="contentgrid"  Margin="0,0,247,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150*"/>
+                    <RowDefinition Height="325*"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="inputTextBox" Margin="115,50,86,0" TextWrapping="Wrap" Height="27" VerticalAlignment="Top" Background="{x:Null}" Foreground="Black" />
+                <Label x:Name="contentlabel" Content="Content:" Height="32" Margin="15,48,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="81" FontSize="14" FontWeight="Bold" Foreground="Black"/>
+                <Button x:Name="generate" Content="Генерация"  Height="22" Margin="152,96,124,0" VerticalAlignment="Top" Click="GenerateQRCode_Click"/>
+                <Image x:Name="qrCodeImageElement" HorizontalAlignment="Left" Height="284" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="580"/>
+
+            </Grid>
         </Grid>
-
-
-
-
-
-
-
-
-
-        <!--
-        <TextBlock Text="Введите текст для подписи:" Margin="10" />
-<TextBox x:Name="inputTextBox" Grid.Row="1" Width="300" Height="30" Margin="10" />
-
-<Button Content="Создать QR-код" Grid.Row="2" Width="120" Height="30" Margin="150,10,530,10" Click="GenerateQRCode_Click" />
-<Image x:Name="qrCodeImageElement" Grid.Row="2" Height="380" Width="380" Margin="400,48,20,20" Grid.RowSpan="2" />
-
-<TextBlock Text="Публичный ключ для верификации:" Grid.Row="3" Margin="10,10,462,250" />
-<TextBox x:Name="publicKeyTextBox" Grid.Row="3" Width="300" Height="30" Margin="10,86,490,282" />
-        -->
-
-    </Grid>
+    </ScrollViewer>
 </Window>
