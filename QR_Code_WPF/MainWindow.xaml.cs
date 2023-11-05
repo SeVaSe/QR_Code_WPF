@@ -23,7 +23,7 @@ namespace QR_Code_WPF
         private void GenerateQRCode_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = inputTextBox.Text;
-            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            string privateKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
 
             if (!File.Exists(privateKeyPath))
             {
@@ -51,7 +51,16 @@ namespace QR_Code_WPF
                 QRCode qrCode = new QRCode(qrCodeData);
 
                 Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                qrCodeImage.Save("QRCodeWithSignature.png");
+
+                //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
+                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                if (!Directory.Exists(saveFolderPath))
+                {
+                    Directory.CreateDirectory(saveFolderPath);
+                }
+                string filePath = Path.Combine(saveFolderPath, $"QR_{saveTextBox.Text}.png");
+                qrCodeImage.Save(filePath);
+                //*************************************************
 
                 MemoryStream ms = new MemoryStream();
                 qrCodeImage.Save(ms, ImageFormat.Png);
@@ -102,15 +111,24 @@ namespace QR_Code_WPF
                     string data = parts[0];
                     string signature = parts[1];
 
-                    if (VerifySignature(data, signature))
+
+                    try
                     {
-                        // Открываем URL в браузере
-                        Process.Start(data);
+                        if (VerifySignature(data, signature))
+                        {
+                            // Открываем URL в браузере
+                            Process.Start(data);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Недействительная подпись!", "Ошибка", MessageBoxButton.OK);
+                        }
                     }
-                    else
-                    {
+                    catch 
+                    { 
                         MessageBox.Show("Недействительная подпись!", "Ошибка", MessageBoxButton.OK);
                     }
+                
                 }
                 else
                 {
@@ -121,7 +139,7 @@ namespace QR_Code_WPF
 
         private bool VerifySignature(string data, string signature)
         {
-            string publicKeyPath = "D:/VISUAL_STUDIO_/Vs_Project/C#/OTHER_WORK/QR_Code_WPF_N/QR_Code_WPF/KeyFolder/publicKey.xml";
+            string publicKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\publicKey.xml";
 
             if (!File.Exists(publicKeyPath))
             {
@@ -143,6 +161,9 @@ namespace QR_Code_WPF
             // Реализуйте сканирование QR-кода с камеры здесь
         }
 
+
+
+        // распознование через цвет, дает сбои
         private void ChangeQRColor_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
@@ -162,7 +183,7 @@ namespace QR_Code_WPF
 
         private void CreateQRCodeWithColor(string dataToSign, System.Windows.Media.Color color)
         {
-            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            string privateKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
 
             if (!File.Exists(privateKeyPath))
             {
@@ -194,7 +215,15 @@ namespace QR_Code_WPF
 
                 Bitmap qrCodeImage = qrCode.GetGraphic(20, qrColor, System.Drawing.Color.White, true);
 
-                qrCodeImage.Save("QRCodeWithSignature.png");
+                //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
+                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                if (!Directory.Exists(saveFolderPath))
+                {
+                    Directory.CreateDirectory(saveFolderPath);
+                }
+                string filePath = Path.Combine(saveFolderPath, $"QR_{saveTextBox.Text}.png");
+                qrCodeImage.Save(filePath);
+                //*************************************************
 
                 MemoryStream ms = new MemoryStream();
                 qrCodeImage.Save(ms, ImageFormat.Png);
@@ -208,5 +237,9 @@ namespace QR_Code_WPF
             }
         }
 
+        private void Visit_QR_Click(object sender, RoutedEventArgs e)
+        {
+            //открыть окно с показром всех QR
+        }
     }
 }

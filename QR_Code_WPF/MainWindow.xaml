@@ -5,31 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QR_Code_WPF"
         mc:Ignorable="d"
-            Title="QR-Code" Height="475" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="475">
+            Title="QR-Code" Height="500" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="475" Background="#aacfe2
+">
 
     <ScrollViewer  VerticalScrollBarVisibility="Auto" SnapsToDevicePixels="True" Opacity="0.93">
         <Grid>
-            <Grid   x:Name="settingsgrid" HorizontalAlignment="Right" Width="242" Background="#43000000">
+            <Grid x:Name="settingsgrid" HorizontalAlignment="Right" Width="242" Background="#43000000">
 
                 <StackPanel x:Name="stackgrid">
-                    <Label x:Name="sttlbl" Content="Настройки" HorizontalAlignment="Center" Height="29" Margin="44,10,0,0" Width="87" VerticalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="White"/>
-                    <Label x:Name="ecclabel" Content="ECC Уровень" Height="31" Margin="18,10,113,0" VerticalAlignment="Top" FontStyle="Italic" Foreground="White"/>
-                    <ComboBox x:Name="ecclevelbox" SelectedValuePath="Content" SelectedIndex="0" Height="22" Margin="20,8,20,0" VerticalAlignment="Center" Foreground="#FF191919"  HorizontalAlignment="Center" Width="202">
-                        <ComboBox.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                                <GradientStop Color="#CC0F0E0E" Offset="1"/>
-                            </LinearGradientBrush>
-                        </ComboBox.Background>
+                    <Label x:Name="sttlbl" Content="Настройки" HorizontalAlignment="Center" Height="34" Margin="20,10,0,0" Width="109" FontWeight="Bold" FontSize="18" Foreground="White"/>
+                    <Label x:Name="ecclabel" Content="ECC Уровень" Height="29" Margin="18,10,113,0" FontSize="14" FontStyle="Italic" Foreground="White"/>
+                    <ComboBox x:Name="ecclevelbox" SelectedValuePath="Content" SelectedIndex="0" Height="28" Margin="20,8,20,0" Foreground="#FF191919" HorizontalAlignment="Center" Width="202">
+                        <ComboBox.Style>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="Background" Value="#EDEDED"/>
+                                <Setter Property="BorderBrush" Value="#959595"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Padding" Value="5"/>
+                            </Style>
+                        </ComboBox.Style>
                         <ComboBoxItem Content="L"/>
                         <ComboBoxItem Content="M"/>
                         <ComboBoxItem Content="Q"/>
                         <ComboBoxItem Content="H"/>
                     </ComboBox>
-                    <Button x:Name="foregroundpick"  Content="Qr-Code цвет" Height="28"  VerticalAlignment="Top" Margin="0,15,41,0" HorizontalAlignment="Right" Width="153" Foreground="White" Background="#80000000" Click="ChangeQRColor_Click" />
 
-                    <Button x:Name="grp" Content="Открыть и сканировать" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Margin="30.5,15,30.5,0" Width="181" Background="#A52329A6" Foreground="#FFF3F1F1" Click="OpenQR_Scan_Click" />
-                    <Button x:Name="backgroundpick"  Content="Сканировать через камеру" Height="28" Margin="0,15,41,0" HorizontalAlignment="Right" Width="159"  Foreground="#FF1D1B1B" Background="#80F5F1F1" Click="Video_Scan_Click"/>
+                    <Button x:Name="foregroundpick" Style="{StaticResource ModernButtonScan}" Content="Qr-Code цвет" Height="28"  VerticalAlignment="Top" Margin="0,15,41,0" HorizontalAlignment="Right" FontSize="18" Width="153" Foreground="White" Click="ChangeQRColor_Click" />
+                    <Button x:Name="grp" Style="{StaticResource ModernButtonAuth}" Content="Открыть и сканировать" Height="40" FontSize="14" Width="202" Foreground="#FFF3F1F1" Click="OpenQR_Scan_Click" />
+                    <Button x:Name="backgroundpick" Style="{StaticResource ModernButtonAuth}" Content="Сканировать через камеру" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Video_Scan_Click"/>
+                    <Button x:Name="pick" Style="{StaticResource ModernButtonAuth}" Content="Просмотреть все QR-Code" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Visit_QR_Click"/>
 
 
                 </StackPanel>
@@ -39,13 +43,43 @@
             <Grid x:Name="contentgrid"  Margin="0,0,247,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="150*"/>
-                    <RowDefinition Height="325*"/>
+                    <RowDefinition Height="350*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="inputTextBox" Margin="115,50,86,0" TextWrapping="Wrap" Height="27" VerticalAlignment="Top" Background="{x:Null}" Foreground="Black" />
-                <Label x:Name="contentlabel" Content="Content:" Height="32" Margin="15,48,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="81" FontSize="14" FontWeight="Bold" Foreground="Black"/>
-                <Button x:Name="generate" Content="Генерация"  Height="22" Margin="152,96,124,0" VerticalAlignment="Top" Click="GenerateQRCode_Click"/>
-                <Image x:Name="qrCodeImageElement" HorizontalAlignment="Left" Height="284" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="580"/>
+                <TextBox Style="{StaticResource ModernTextBox}" x:Name="inputTextBox" Margin="106,18,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
+                <Label Style="{StaticResource ModernLabelText}" x:Name="contentlabel" Content="Ваша ссылка:" Height="32" Margin="5,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
+                <TextBox Style="{StaticResource ModernTextBoxSave}" x:Name="saveTextBox" Margin="106,57,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
+                <Label Style="{StaticResource ModernLabelText}" Content="Имя QR-Code:" Height="32" Margin="5,59,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
 
+                <Button Style="{StaticResource ModernButtonScan}" x:Name="generate" Content="Сгенерировать QR-Code"  Height="31" Margin="150,104,126,0" VerticalAlignment="Top" Click="GenerateQRCode_Click"/>
+
+
+                <Grid Grid.Row="1">
+                    <Border BorderBrush="Black" BorderThickness="1" Width="580">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="313*"/>
+                                <RowDefinition Height="10*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="300*"/>
+                                <ColumnDefinition Width="260*"/>
+                                <ColumnDefinition Width="5*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Margin="25,42,24,42" Style="{StaticResource ModernBorderQR}" Height="255" Width="255" Grid.Column="1">
+                                <Image x:Name="qrCodeImageElement" Margin="10,10,10,10"  VerticalAlignment="Top" HorizontalAlignment="Left" Height="240" Width="235"/>
+                            </Border>
+
+                        </Grid>
+
+                    </Border>
+
+                </Grid>
+                <!--<Image x:Name="qrCodeImageElement" Height="285" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="286"/>-->
+
+                <!--Image x:Name="qrCodeImageElement" Height="285" Margin="10,10,308,0" Grid.Row="1" VerticalAlignment="Top"/>
+                -->
             </Grid>
         </Grid>
     </ScrollViewer>
