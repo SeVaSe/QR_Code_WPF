@@ -17,6 +17,8 @@ namespace QR_Code_WPF
 {
     public partial class MainWindow : Window
     {
+        private System.Windows.Media.Color selectedColor;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -349,5 +351,115 @@ namespace QR_Code_WPF
         {
             MessageBox.Show("Вы перешли в СПИСОК-QR");
         }
+
+
+
+
+
+
+        //СОЗДАНИЕ QR-ОБЫКНОВЕННЫЙ
+        private void OrdinaryQR_Click(object sender, RoutedEventArgs e)
+        {
+            string dataToSign = TxtBox_Link_Border1.Text;
+            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            bool isChecked = ChckBox_KEY.IsChecked ?? false;
+
+            if (!File.Exists(privateKeyPath))
+            {
+                MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                return;
+            }
+
+            if (isChecked)
+            {
+                using (RSA rsa = RSA.Create())
+                {
+                    rsa.FromXmlString(File.ReadAllText(privateKeyPath));
+
+                    byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
+                    byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                    string signatureString = Convert.ToBase64String(signature);
+
+                    string qrData = dataToSign + ";" + signatureString;
+
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                    QRCode qrCode = new QRCode(qrCodeData);
+
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                    // Сохранение QR-кода
+                    string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                    if (!Directory.Exists(saveFolderPath))
+                    {
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                    string filePath = Path.Combine(saveFolderPath, $"QROrdinaryP_{TxtBox_SaveName_Border1.Text}.png");
+                    qrCodeImage.Save(filePath);
+
+                    MemoryStream ms = new MemoryStream();
+                    qrCodeImage.Save(ms, ImageFormat.Png);
+                    BitmapImage imageSource = new BitmapImage();
+                    imageSource.BeginInit();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    imageSource.StreamSource = ms;
+                    imageSource.EndInit();
+
+                    qrCodeImageElement.Source = imageSource;
+                }
+            }
+            else
+            {
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                // Сохранение QR-кода
+                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                if (!Directory.Exists(saveFolderPath))
+                {
+                    Directory.CreateDirectory(saveFolderPath);
+                }
+                string filePath = Path.Combine(saveFolderPath, $"QROrdinaryNp_{TxtBox_SaveName_Border1.Text}.png");
+                qrCodeImage.Save(filePath);
+
+                MemoryStream ms = new MemoryStream();
+                qrCodeImage.Save(ms, ImageFormat.Png);
+                BitmapImage imageSource = new BitmapImage();
+                imageSource.BeginInit();
+                ms.Seek(0, SeekOrigin.Begin);
+                imageSource.StreamSource = ms;
+                imageSource.EndInit();
+
+                qrCodeImageElement.Source = imageSource;
+            }
+        }
+
+
+
+        // СОЗДАНИЕ QR-с ЦВЕТОМ
+        // Метод для отображения окна выбора цвета
+        private void ChooseColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Открываем окно выбора цвета
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                System.Drawing.Color selectedDrawingColor = colorDialog.Color;
+                selectedColor = System.Windows.Media.Color.FromArgb(selectedDrawingColor.A, selectedDrawingColor.R, selectedDrawingColor.G, selectedDrawingColor.B);
+            }
+        }
+
+        private void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(selectedColor.ToString());
+            selectedColor = System.Windows.Media.Colors.Black; // Инициализация выбранного цвета черным цветом или любым другим значением по умолчанию
+
+
+        }
+
+        
     }
 }

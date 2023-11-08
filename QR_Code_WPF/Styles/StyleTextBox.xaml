@@ -5,29 +5,32 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border CornerRadius="10"
-                            BorderThickness="3"
-                            BorderBrush="#016392"
-                            Width="330" Height="50">
+                        BorderThickness="3"
+                        BorderBrush="#e4d9ff"
+                        Width="330" Height="50">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#e2b3ff" Direction="0" ShadowDepth="0" Opacity="1" BlurRadius="5"/>
+                        </Border.Effect>
 
                         <Grid>
                             <Rectangle StrokeThickness="1"/>
                             <TextBox Margin="1"
-                                     Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}}"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     VerticalContentAlignment="Center"
-                                     Padding="2,0,0,0"
-                                     Foreground="#1c73ff"
-                                     FontSize="15"
-                                     x:Name="SearchBox"/>
+                                 Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}}"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 VerticalContentAlignment="Center"
+                                 Padding="2,0,0,0"
+                                 Foreground="White"
+                                 FontSize="15"
+                                 x:Name="SearchBox"/>
 
                             <TextBlock IsHitTestVisible="False"
-                                       Text="Введите ссылку на QR-Code ✏️"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Margin="10,0,0,0"
-                                       FontSize="15"
-                                       Foreground="#819194">
+                                   Text="Введите ссылку на QR-Code ✏️"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,0,0,0"
+                                   FontSize="15"
+                                   Foreground="White">
 
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
@@ -47,14 +50,18 @@
         </Setter>
     </Style>
 
+
     <Style TargetType="{x:Type TextBox}" x:Key="ModernTextBoxSave">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border CornerRadius="10"
                         BorderThickness="3"
-                        BorderBrush="#016392"
+                        BorderBrush="#e4d9ff"
                         Width="330" Height="50">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#e2b3ff" Direction="0" ShadowDepth="0" Opacity="1" BlurRadius="5"/>
+                        </Border.Effect>
 
                         <Grid>
                             <Rectangle StrokeThickness="1"/>
@@ -64,7 +71,7 @@
                                  Background="Transparent"
                                  VerticalContentAlignment="Center"
                                  Padding="2,0,0,0"
-                                 Foreground="#1c73ff"
+                                 Foreground="White"
                                  FontSize="15"
                                  x:Name="SearchBox"/>
 
@@ -74,7 +81,7 @@
                                    HorizontalAlignment="Left"
                                    Margin="10,0,0,0"
                                    FontSize="15"
-                                   Foreground="#819194">
+                                   Foreground="White">
 
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
