@@ -318,8 +318,7 @@ namespace QR_Code_WPF
         // помощь
         private void Help_U_Click(object sender, RoutedEventArgs e)
         {
-            /*var mesBoxHelps = new MessageBox_Modern("Помощь", "", 300, 400);
-            mesBoxHelps.ShowDialog();*/
+            MessageBox.Show("Приветствуем вас в приложении QR-Code! Здесь вы сможете создавать разнообразные типы QR-кодов. Мы поддерживаем все - от обычных до более надежных с защитой ECC (Error Correction Capability) и даже возможностью добавления цвета.\r\n\r\nЭто приложение также предоставляет возможность создания QR-кодов с особым ключом - электронной подписью. Это означает, что созданные QR-коды можно считывать только с помощью этого приложения, обеспечивая дополнительный уровень безопасности и конфиденциальности.", "Информация QR-Code", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
 
@@ -344,6 +343,11 @@ namespace QR_Code_WPF
         private void CreateQr_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Вы уже находитесь в данном разделе", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void SpisoDBQR_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Вы перешли в СПИСОК-QR");
         }
     }
 }

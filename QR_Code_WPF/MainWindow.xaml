@@ -68,7 +68,7 @@
                     FontFamily="Fonts/#Dosis" 
                     FontSize="20"
                     ToolTip="Просмотреть и отредактировать список все QR (Нажмите чтобы перейти)"
-                    Click="CreateQr_Click" 
+                    Click="SpisoDBQR_Click" 
                     Grid.Column="2"
                     Cursor="Hand"
                     Background="Transparent"
@@ -185,8 +185,8 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="10*"/>
                                     <RowDefinition Height="40*"/>
-                                    <RowDefinition Height="100*"/>
-                                    <RowDefinition Height="255*"/>
+                                    <RowDefinition Height="155*"/>
+                                    <RowDefinition Height="200*"/>
                                     <RowDefinition Height="10*"/>
                                 </Grid.RowDefinitions>
 
@@ -209,11 +209,31 @@
                                 <TextBlock Grid.Column="1" Grid.Row="2"
                                            Style="{StaticResource ModernTextBlock}"
                                            TextWrapping="Wrap"
-                                           FontSize="20"
-                                           Text=""/>
+                                           FontSize="18"
+                                           Text="Этот раздел предоставляет возможность создать стандартный QR-код без дополнительных параметров. Снимите флажок ЭЛЕКТРОННАЯ ПОДПИСЬ, чтобы создать QR-код без специального ключа. Просто заполните поля и нажмите 'Создать'"
+                                           />
 
                                 <Grid Grid.Column="1" Grid.Row="3">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="60*"/>
+                                        <RowDefinition Height="60*"/>
+                                        <RowDefinition Height="80*"/>
+                                    </Grid.RowDefinitions>
 
+                                    <!--TxtBox для ввода ссылки-->
+                                    <TextBox HorizontalAlignment="Center" Style="{StaticResource ModernTextBox}" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" Height="54" Margin="0,6,0,0"/>
+                                    <!--TxtBox для ввода названия-->
+                                    <TextBox HorizontalAlignment="Center" Grid.Row="1" Style="{StaticResource ModernTextBoxSave}" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" Height="54" Margin="0,5,0,0"/>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Grid.ColumnSpan="2" Content="Создать" Style="{StaticResource ModernButtonBorder1}" Margin="0,10,113,10"/>
+                                        <CheckBox Grid.Column="1" IsChecked="True" Margin="23,14,57,40"/>
+
+                                    </Grid>
                                 </Grid>
                             </Grid>
 
@@ -339,17 +359,6 @@
                     </StackPanel>
                 </ScrollViewer>
 
-
-
-                <TextBlock Text=" QR" Style="{StaticResource ModernTextBlock}"
-                       Grid.Column="3" Grid.Row="1" Margin="155,16,156,365"
-                       FontSize="30" FontWeight="Bold" >
-
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="10"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-
                 <!--RIGHT-->
                 <ScrollViewer Grid.Column="3" Grid.Row="1"  
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
@@ -362,7 +371,15 @@
 
 
             </Grid>
-            <Grid Grid.Row="1"/>
+            <Grid Grid.Row="1">
+                <TextBlock Text="Ваш QR" Style="{StaticResource ModernTextBlock}" Margin="548,21,130,375"
+                       FontSize="30" FontWeight="Bold" >
+
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="10"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Grid>
 
 
 
