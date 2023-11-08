@@ -120,4 +120,31 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ButtonClearTheme" TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="#FF9400D3" Direction="0" ShadowDepth="0" Opacity="1" BlurRadius="20"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 </ResourceDictionary>

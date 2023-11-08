@@ -13,8 +13,10 @@
                 <ResourceDictionary Source="Styles/StyleLabel.xaml"/>
                 <ResourceDictionary Source="Styles/StyleTextBox.xaml"/>
                 <ResourceDictionary Source="Styles/BorderStyles.xaml"/>
+                <ResourceDictionary Source="Styles/ModernWindowStyle.xaml"/>
+                <ResourceDictionary Source="Styles/ModernTextBlock.xaml"/>
 
-
+                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

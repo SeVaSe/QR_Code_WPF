@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace QR_Code_WPF
 {
@@ -20,7 +22,7 @@ namespace QR_Code_WPF
             InitializeComponent();
         }
 
-        private void GenerateQRCode_Click(object sender, RoutedEventArgs e)
+        /*private void GenerateQRCode_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = inputTextBox.Text;
             string privateKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
@@ -236,10 +238,112 @@ namespace QR_Code_WPF
                 qrCodeImageElement.Source = imageSource;
             }
         }
-
+*/
         private void Visit_QR_Click(object sender, RoutedEventArgs e)
         {
             //открыть окно с показром всех QR
+        }
+
+        //Свернуть
+        private void Svernut_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        //Закрыть
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        //передвижение экрана
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+
+        }
+
+        //перезагрузка
+        private void Perezapusk_Click(object sender, RoutedEventArgs e)
+        {
+            Window wind = new MainWindow();
+            this.Close();
+            wind.Show();
+        }
+
+
+        // ВЬЮВЕРЫ 1 и 2
+        //1
+        private void ScrollViewer_PreviewMouseWheel1(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scroll = (ScrollViewer)sender;
+            double amountSpeed = 30;
+
+            if (e.Delta > 0)
+            {
+                scroll.ScrollToVerticalOffset(scroll.VerticalOffset + amountSpeed);
+            }
+            else
+            {
+                scroll.ScrollToVerticalOffset(scroll.VerticalOffset - amountSpeed);
+            }
+            e.Handled = true;
+        }
+
+        //2
+        private void ScrollViewer_PreviewMouseWheel2(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scroll = (ScrollViewer)sender;
+            double amountSpeed = 30;
+
+            if (e.Delta > 0)
+            {
+                scroll.ScrollToVerticalOffset(scroll.VerticalOffset + amountSpeed);
+            }
+            else
+            {
+                scroll.ScrollToVerticalOffset(scroll.VerticalOffset - amountSpeed);
+            }
+            e.Handled = true;
+        }
+
+
+        // помощь
+        private void Help_U_Click(object sender, RoutedEventArgs e)
+        {
+            /*var mesBoxHelps = new MessageBox_Modern("Помощь", "", 300, 400);
+            mesBoxHelps.ShowDialog();*/
+        }
+
+
+        // прокрутка внутри ричбоксов
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.FocusedElement is RichTextBox richTextBox)
+            {
+                if (e.Key == Key.Up)
+                {
+                    richTextBox.LineUp();
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Down)
+                {
+                    richTextBox.LineDown();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void CreateQr_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Вы уже находитесь в данном разделе", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

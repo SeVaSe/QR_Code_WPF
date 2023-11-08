@@ -5,82 +5,451 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QR_Code_WPF"
         mc:Ignorable="d"
-            Title="QR-Code" Height="500" Width="850" WindowStartupLocation="CenterScreen" MinWidth="850" MinHeight="475" Background="#aacfe2
-">
+           Style="{StaticResource ModernWindowStyle}" Title="QR-Code"
 
-    <ScrollViewer  VerticalScrollBarVisibility="Auto" SnapsToDevicePixels="True" Opacity="0.93">
+    WindowStartupLocation="CenterScreen"
+    PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Border Background="#272537" CornerRadius="20" >
         <Grid>
-            <Grid x:Name="settingsgrid" HorizontalAlignment="Right" Width="242" Background="#43000000">
-
-                <StackPanel x:Name="stackgrid">
-                    <Label x:Name="sttlbl" Content="Настройки" HorizontalAlignment="Center" Height="34" Margin="20,10,0,0" Width="109" FontWeight="Bold" FontSize="18" Foreground="White"/>
-                    <Label x:Name="ecclabel" Content="ECC Уровень" Height="29" Margin="18,10,113,0" FontSize="14" FontStyle="Italic" Foreground="White"/>
-                    <ComboBox x:Name="ecclevelbox" SelectedValuePath="Content" SelectedIndex="0" Height="28" Margin="20,8,20,0" Foreground="#FF191919" HorizontalAlignment="Center" Width="202">
-                        <ComboBox.Style>
-                            <Style TargetType="ComboBox">
-                                <Setter Property="Background" Value="#EDEDED"/>
-                                <Setter Property="BorderBrush" Value="#959595"/>
-                                <Setter Property="BorderThickness" Value="1"/>
-                                <Setter Property="Padding" Value="5"/>
-                            </Style>
-                        </ComboBox.Style>
-                        <ComboBoxItem Content="L"/>
-                        <ComboBoxItem Content="M"/>
-                        <ComboBoxItem Content="Q"/>
-                        <ComboBoxItem Content="H"/>
-                    </ComboBox>
-
-                    <Button x:Name="foregroundpick" Style="{StaticResource ModernButtonScan}" Content="Qr-Code цвет" Height="28"  VerticalAlignment="Top" Margin="0,15,41,0" HorizontalAlignment="Right" FontSize="18" Width="153" Foreground="White" Click="ChangeQRColor_Click" />
-                    <Button x:Name="grp" Style="{StaticResource ModernButtonAuth}" Content="Открыть и сканировать" Height="40" FontSize="14" Width="202" Foreground="#FFF3F1F1" Click="OpenQR_Scan_Click" />
-                    <Button x:Name="backgroundpick" Style="{StaticResource ModernButtonAuth}" Content="Сканировать через камеру" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Video_Scan_Click"/>
-                    <Button x:Name="pick" Style="{StaticResource ModernButtonAuth}" Content="Просмотреть все QR-Code" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Visit_QR_Click"/>
+            <Grid.ColumnDefinitions>
 
 
-                </StackPanel>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="63*"/>
+                <RowDefinition Height="595*"/>
+                <RowDefinition Height="26*"/>
+            </Grid.RowDefinitions>
 
 
-            </Grid>
-            <Grid x:Name="contentgrid"  Margin="0,0,247,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="150*"/>
-                    <RowDefinition Height="350*"/>
-                </Grid.RowDefinitions>
-                <TextBox Style="{StaticResource ModernTextBox}" x:Name="inputTextBox" Margin="106,18,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
-                <Label Style="{StaticResource ModernLabelText}" x:Name="contentlabel" Content="Ваша ссылка:" Height="32" Margin="5,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
-                <TextBox Style="{StaticResource ModernTextBoxSave}" x:Name="saveTextBox" Margin="106,57,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
-                <Label Style="{StaticResource ModernLabelText}" Content="Имя QR-Code:" Height="32" Margin="5,59,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
+            <!--нижняя строка-->
+            <Border  Background="#222030" BorderThickness="0" CornerRadius="0, 0, 20, 20" Grid.Row="2" Grid.ColumnSpan="3"/>
+            <!--верхняя строка-->
+            <Border  Background="#1b192b" BorderThickness="0" CornerRadius="20, 20, 0, 0" Grid.ColumnSpan="3"
+                 MouseLeftButtonDown="Window_MouseLeftButtonDown"
+    MouseMove="Window_MouseMove" Cursor="SizeAll">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200*"/>
+                        <ColumnDefinition Width="200*"/>
+                        <ColumnDefinition Width="200*"/>
+                        <ColumnDefinition Width="200*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Button Style="{StaticResource ModernButtonScan}" x:Name="generate" Content="Сгенерировать QR-Code"  Height="31" Margin="150,104,126,0" VerticalAlignment="Top" Click="GenerateQRCode_Click"/>
+                    <TextBlock Text="QR-Code"
+                      Style="{StaticResource ModernTextBlock}"
+                      FontSize="30"
+                      FontWeight="Bold"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top" Width="152" Margin="38,7,0,0">
 
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="20"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
 
-                <Grid Grid.Row="1">
-                    <Border BorderBrush="Black" BorderThickness="1" Width="580">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="10*"/>
-                                <RowDefinition Height="313*"/>
-                                <RowDefinition Height="10*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5*"/>
-                                <ColumnDefinition Width="300*"/>
-                                <ColumnDefinition Width="260*"/>
-                                <ColumnDefinition Width="5*"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Margin="25,42,24,42" Style="{StaticResource ModernBorderQR}" Height="255" Width="255" Grid.Column="1">
-                                <Image x:Name="qrCodeImageElement" Margin="10,10,10,10"  VerticalAlignment="Top" HorizontalAlignment="Left" Height="240" Width="235"/>
-                            </Border>
+                    <Button Content="Создание QR-Code"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="20"
+                    Click="CreateQr_Click" 
+                    Grid.Column="1"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Foreground="AliceBlue"
+                    BorderThickness="0"
+                    ToolTip="Создайте QR (Вы здесь сейчас)"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource ButtonClearTheme}" Margin="0,14,0,0"/>
 
-                        </Grid>
+                    <Button Content="Список QR-Code"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="20"
+                    ToolTip="Просмотреть и отредактировать список все QR (Нажмите чтобы перейти)"
+                    Click="CreateQr_Click" 
+                    Grid.Column="2"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Foreground="AliceBlue"
+                    BorderThickness="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource ButtonClearTheme}" Margin="0,14,0,0"/>
 
-                    </Border>
+                    <Button Content="?"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="30"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Foreground="#fcfce8" 
+                    FontWeight="Bold"
+                    ToolTip="Помощь"
+                    Style="{StaticResource ButtonClearTheme}" 
+                    BorderThickness="0" Click="Help_U_Click"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Margin="19,7,0,0" Width="31" Grid.Column="3">
+
+                        <Button.Effect>
+                            <DropShadowEffect Color="Yellow" ShadowDepth="0" BlurRadius="20"/>
+                        </Button.Effect>
+                    </Button>
+
+                    <Button Content="❌"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="17" 
+                    Cursor="Hand"
+                    Grid.Column="3"
+                    Background="Transparent"
+                    Foreground="AliceBlue"
+                        Style="{StaticResource ButtonClearTheme}"
+                    BorderThickness="0" Click="Exit_Click"
+                    HorizontalAlignment="Left"
+                    FontWeight="Bold"
+                    VerticalAlignment="Top" Margin="159,16,0,0" RenderTransformOrigin="0.494,0.547">
+                    </Button>
+
+                    <Button Content="━"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="40" 
+                    Grid.Column="3"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Foreground="AliceBlue"
+                    FontWeight="Bold"
+                        Style="{StaticResource ButtonClearTheme}" 
+                    BorderThickness="0" Click="Svernut_Click" 
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center" Margin="112,0,0,0" Width="31"/>
+
+                    <Button Content="⟲"
+                    FontFamily="Fonts/#Dosis" 
+                    FontSize="30" 
+                    Grid.Column="3"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Foreground="AliceBlue"
+                    FontWeight="Bold"
+                    Style="{StaticResource ButtonClearTheme}" 
+                    BorderThickness="0" Click="Perezapusk_Click" 
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Margin="70,8,0,0" Width="31"/>
+
 
                 </Grid>
-                <!--<Image x:Name="qrCodeImageElement" Height="285" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="286"/>-->
+            </Border>
 
-                <!--Image x:Name="qrCodeImageElement" Height="285" Margin="10,10,308,0" Grid.Row="1" VerticalAlignment="Top"/>
-                -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="426*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="215*"/>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="215*"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+
+
+
+                <!--LEFT-->
+                <ScrollViewer Grid.Row="1" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel1"  Grid.ColumnSpan="2" Grid.Column="1" Margin="0,0,38,0" Grid.RowSpan="2">
+                    <StackPanel Orientation="Vertical" >
+                        <!--1-->
+                        <Border Height="415" Margin="5,5,5,15" CornerRadius="15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#17132F" Offset="0"/>
+                                    <GradientStop Color="#2A1836" Offset="0.5"/>
+                                    <GradientStop Color="#4F1C3D" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+
+
+                            <Border.Effect>
+                                <DropShadowEffect Color="#413a4f" ShadowDepth="0" BlurRadius="9"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*"/>
+                                    <ColumnDefinition Width="322*"/>
+                                    <ColumnDefinition Width="10*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="40*"/>
+                                    <RowDefinition Height="100*"/>
+                                    <RowDefinition Height="255*"/>
+                                    <RowDefinition Height="10*"/>
+                                </Grid.RowDefinitions>
+
+                                <!--Название блока-->
+                                <TextBlock Text="Обычный QR"
+                                          Grid.Column="1"
+                                          Grid.Row="1"
+                                          Style="{StaticResource ModernTextBlock}"
+                                          FontSize="30"
+                                          FontWeight="Bold"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Top" Width="205">
+
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#a07aff" ShadowDepth="0" BlurRadius="20"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                                <!--Описание блока-->
+                                <TextBlock Grid.Column="1" Grid.Row="2"
+                                           Style="{StaticResource ModernTextBlock}"
+                                           TextWrapping="Wrap"
+                                           FontSize="20"
+                                           Text=""/>
+
+                                <Grid Grid.Column="1" Grid.Row="3">
+
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+
+
+                        <!--2-->
+                        <Border Height="415" Margin="5,5,5,15" CornerRadius="15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#4F1C3D" Offset="0"/>
+                                    <GradientStop Color="#1F0B29" Offset="0.5"/>
+                                    <GradientStop Color="#0D0C1B" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+
+
+                            <Border.Effect>
+                                <DropShadowEffect Color="#413a4f" ShadowDepth="0" BlurRadius="9"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*"/>
+                                    <ColumnDefinition Width="322*"/>
+                                    <ColumnDefinition Width="10*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="40*"/>
+                                    <RowDefinition Height="100*"/>
+                                    <RowDefinition Height="255*"/>
+                                    <RowDefinition Height="10*"/>
+                                </Grid.RowDefinitions>
+
+                                <!--Название блока-->
+                                <TextBlock Text="Цветной QR"
+                  Grid.Column="1"
+                  Grid.Row="1"
+                  Style="{StaticResource ModernTextBlock}"
+                  FontSize="30"
+                  FontWeight="Bold"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Top" Width="184">
+
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#a07aff" ShadowDepth="0" BlurRadius="20"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                                <!--Описание блока-->
+                                <TextBlock Grid.Column="1" Grid.Row="2"
+                   Style="{StaticResource ModernTextBlock}"
+                   TextWrapping="Wrap"
+                   FontSize="20"
+                   Text=""/>
+
+                                <Grid Grid.Column="1" Grid.Row="3">
+
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+
+
+                        <!--3-->
+                        <Border Height="415" Margin="5,5,5,15" CornerRadius="15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#0D0C1B" Offset="0"/>
+                                    <GradientStop Color="#04011f" Offset="0.5"/>
+                                    <GradientStop Color="#000000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+
+
+                            <Border.Effect>
+                                <DropShadowEffect Color="#413a4f" ShadowDepth="0" BlurRadius="9"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*"/>
+                                    <ColumnDefinition Width="322*"/>
+                                    <ColumnDefinition Width="10*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="40*"/>
+                                    <RowDefinition Height="100*"/>
+                                    <RowDefinition Height="255*"/>
+                                    <RowDefinition Height="10*"/>
+                                </Grid.RowDefinitions>
+
+                                <!--Название блока-->
+                                <TextBlock Text="QR c ECC защитой"
+                  Grid.Column="1"
+                  Grid.Row="1"
+                  Style="{StaticResource ModernTextBlock}"
+                  FontSize="30"
+                  FontWeight="Bold"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Top" Width="269">
+
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#a07aff" ShadowDepth="0" BlurRadius="20"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                                <!--Описание блока-->
+                                <TextBlock Grid.Column="1" Grid.Row="2"
+                   Style="{StaticResource ModernTextBlock}"
+                   TextWrapping="Wrap"
+                   FontSize="20"
+                   Text=""/>
+
+                                <Grid Grid.Column="1" Grid.Row="3">
+
+                                </Grid>
+                            </Grid>
+
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+
+
+                <TextBlock Text=" QR" Style="{StaticResource ModernTextBlock}"
+                       Grid.Column="3" Grid.Row="1" Margin="155,16,156,365"
+                       FontSize="30" FontWeight="Bold" >
+
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="10"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <!--RIGHT-->
+                <ScrollViewer Grid.Column="3" Grid.Row="1"  
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel2" Margin="0,57,0,0" Grid.RowSpan="2">
+
+                </ScrollViewer>
+
+
+
+
+
             </Grid>
+            <Grid Grid.Row="1"/>
+
+
+
+
+
         </Grid>
-    </ScrollViewer>
+    </Border>
+
+
+
+
+
+
+
+
+
+
+    <!--<ScrollViewer  VerticalScrollBarVisibility="Auto" SnapsToDevicePixels="True" Opacity="0.93">
+    <Grid>
+        <Grid x:Name="settingsgrid" HorizontalAlignment="Right" Width="242" Background="#43000000">
+
+            <StackPanel x:Name="stackgrid">
+                <Label x:Name="sttlbl" Content="Настройки" HorizontalAlignment="Center" Height="34" Margin="20,10,0,0" Width="109" FontWeight="Bold" FontSize="18" Foreground="White"/>
+                <Label x:Name="ecclabel" Content="ECC Уровень" Height="29" Margin="18,10,113,0" FontSize="14" FontStyle="Italic" Foreground="White"/>
+                <ComboBox x:Name="ecclevelbox" SelectedValuePath="Content" SelectedIndex="0" Height="28" Margin="20,8,20,0" Foreground="#FF191919" HorizontalAlignment="Center" Width="202">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Background" Value="#EDEDED"/>
+                            <Setter Property="BorderBrush" Value="#959595"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Padding" Value="5"/>
+                        </Style>
+                    </ComboBox.Style>
+                    <ComboBoxItem Content="L"/>
+                    <ComboBoxItem Content="M"/>
+                    <ComboBoxItem Content="Q"/>
+                    <ComboBoxItem Content="H"/>
+                </ComboBox>
+
+                <Button x:Name="foregroundpick" Style="{StaticResource ModernButtonScan}" Content="Qr-Code цвет" Height="28"  VerticalAlignment="Top" Margin="0,15,41,0" HorizontalAlignment="Right" FontSize="18" Width="153" Foreground="White" Click="ChangeQRColor_Click" />
+                <Button x:Name="grp" Style="{StaticResource ModernButtonAuth}" Content="Открыть и сканировать" Height="40" FontSize="14" Width="202" Foreground="#FFF3F1F1" Click="OpenQR_Scan_Click" />
+                <Button x:Name="backgroundpick" Style="{StaticResource ModernButtonAuth}" Content="Сканировать через камеру" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Video_Scan_Click"/>
+                <Button x:Name="pick" Style="{StaticResource ModernButtonAuth}" Content="Просмотреть все QR-Code" Height="40" FontSize="14" Width="202"  Foreground="#FFF3F1F1"  Click="Visit_QR_Click"/>
+
+
+            </StackPanel>
+
+
+        </Grid>
+        <Grid x:Name="contentgrid"  Margin="0,0,247,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150*"/>
+                <RowDefinition Height="350*"/>
+            </Grid.RowDefinitions>
+            <TextBox Style="{StaticResource ModernTextBox}" x:Name="inputTextBox" Margin="106,18,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
+            <Label Style="{StaticResource ModernLabelText}" x:Name="contentlabel" Content="Ваша ссылка:" Height="32" Margin="5,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
+            <TextBox Style="{StaticResource ModernTextBoxSave}" x:Name="saveTextBox" Margin="106,57,0,0" TextWrapping="Wrap" Height="36" VerticalAlignment="Top" Background="{x:Null}" HorizontalAlignment="Left" Width="487"/>
+            <Label Style="{StaticResource ModernLabelText}" Content="Имя QR-Code:" Height="32" Margin="5,59,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="105" FontSize="14" FontWeight="Bold"/>
+
+            <Button Style="{StaticResource ModernButtonScan}" x:Name="generate" Content="Сгенерировать QR-Code"  Height="31" Margin="150,104,126,0" VerticalAlignment="Top" Click="GenerateQRCode_Click"/>
+
+
+            <Grid Grid.Row="1">
+                <Border BorderBrush="Black" BorderThickness="1" Width="580">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="313*"/>
+                            <RowDefinition Height="10*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="300*"/>
+                            <ColumnDefinition Width="260*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Margin="25,42,24,42" Style="{StaticResource ModernBorderQR}" Height="255" Width="255" Grid.Column="1">
+                            <Image x:Name="qrCodeImageElement" Margin="10,10,10,10"  VerticalAlignment="Top" HorizontalAlignment="Left" Height="240" Width="235"/>
+                        </Border>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+           
+        </Grid>
+    </Grid>
+</ScrollViewer>-->
 </Window>
