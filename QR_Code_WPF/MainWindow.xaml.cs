@@ -140,7 +140,7 @@ namespace QR_Code_WPF
         //МЕТОД ДЛЯ РАСШИФРОКИ ПОДПИСИ
         private bool VerifySignature(string data, string signature)
         {
-            string publicKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\publicKey.xml";
+            string publicKeyPath = Path.Combine(Environment.CurrentDirectory, "KeyFolder\\publicKey.xml"); // должен находится, где и исполняемый файл 
 
             if (!File.Exists(publicKeyPath))
             {
@@ -466,7 +466,7 @@ namespace QR_Code_WPF
         private void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = TxtBox_Link_Border2.Text;
-            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            string privateKeyPath = Path.Combine(Environment.CurrentDirectory, "KeyFolder\\privateKey.xml"); // должен находится, где и исполняемый файл 
             bool isChecked = ChckBox_KEY2.IsChecked ?? false;
 
             if (TxtBox_Link_Border2.Text != "" && TxtBox_SaveName_Border2.Text != "")
@@ -573,7 +573,7 @@ namespace QR_Code_WPF
         private void CreateQRECC_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = TxtBox_Link_Border3.Text;
-            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            string privateKeyPath = Path.Combine(Environment.CurrentDirectory, "KeyFolder\\privateKey.xml"); // должен находится, где и исполняемый файл 
             bool isChecked = ChckBox_KEY3.IsChecked ?? false;
 
 
