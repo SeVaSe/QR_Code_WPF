@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace QR_Code_WPF
 {
@@ -24,223 +25,7 @@ namespace QR_Code_WPF
             InitializeComponent();
         }
 
-        /*private void GenerateQRCode_Click(object sender, RoutedEventArgs e)
-        {
-            string dataToSign = inputTextBox.Text;
-            string privateKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
-
-            if (!File.Exists(privateKeyPath))
-            {
-                MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
-                return;
-            }
-
-            using (RSA rsa = RSA.Create())
-            {
-                rsa.FromXmlString(File.ReadAllText(privateKeyPath));
-
-                byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
-                byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-                string signatureString = Convert.ToBase64String(signature);
-
-                string qrData = dataToSign + ";" + signatureString;
-
-                // Получаем выбранный ECC уровень
-                string selectedEccLevel = ecclevelbox.SelectedValue.ToString();
-
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-
-                // Используем выбранный ECC уровень
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, GetEccLevel(selectedEccLevel));
-                QRCode qrCode = new QRCode(qrCodeData);
-
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
-                //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
-                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
-                if (!Directory.Exists(saveFolderPath))
-                {
-                    Directory.CreateDirectory(saveFolderPath);
-                }
-                string filePath = Path.Combine(saveFolderPath, $"QR_{saveTextBox.Text}.png");
-                qrCodeImage.Save(filePath);
-                //*************************************************
-
-                MemoryStream ms = new MemoryStream();
-                qrCodeImage.Save(ms, ImageFormat.Png);
-                var imageSource = new BitmapImage();
-                imageSource.BeginInit();
-                ms.Seek(0, SeekOrigin.Begin);
-                imageSource.StreamSource = ms;
-                imageSource.EndInit();
-
-                qrCodeImageElement.Source = imageSource;
-            }
-        }
-
-        // Вспомогательная функция для получения ECC уровня
-        private QRCodeGenerator.ECCLevel GetEccLevel(string selectedEccLevel)
-        {
-            switch (selectedEccLevel)
-            {
-                case "L":
-                    return QRCodeGenerator.ECCLevel.L;
-                case "M":
-                    return QRCodeGenerator.ECCLevel.M;
-                case "Q":
-                    return QRCodeGenerator.ECCLevel.Q;
-                case "H":
-                    return QRCodeGenerator.ECCLevel.H;
-                default:
-                    return QRCodeGenerator.ECCLevel.L; // По умолчанию используется L
-            }
-        }
-
-        private void OpenQR_Scan_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string imagePath = openFileDialog.FileName;
-                Bitmap qrCodeBitmap = new Bitmap(imagePath);
-                BarcodeReader reader = new BarcodeReader();
-                Result result = reader.Decode(qrCodeBitmap);
-
-                if (result != null)
-                {
-                    string qrData = result.Text;
-                    string[] parts = qrData.Split(';');
-                    string data = parts[0];
-                    string signature = parts[1];
-
-
-                    try
-                    {
-                        if (VerifySignature(data, signature))
-                        {
-                            // Открываем URL в браузере
-                            Process.Start(data);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Недействительная подпись!", "Ошибка", MessageBoxButton.OK);
-                        }
-                    }
-                    catch 
-                    { 
-                        MessageBox.Show("Недействительная подпись!", "Ошибка", MessageBoxButton.OK);
-                    }
-                
-                }
-                else
-                {
-                    MessageBox.Show("QR-код не распознан!", "Ошибка", MessageBoxButton.OK);
-                }
-            }
-        }
-
-        private bool VerifySignature(string data, string signature)
-        {
-            string publicKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\publicKey.xml";
-
-            if (!File.Exists(publicKeyPath))
-            {
-                MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
-                return false;
-            }
-
-            using (RSA rsaPublic = RSA.Create())
-            {
-                rsaPublic.FromXmlString(File.ReadAllText(publicKeyPath));
-                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-                byte[] signatureBytes = Convert.FromBase64String(signature);
-                return rsaPublic.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-            }
-        }
-
-        private void Video_Scan_Click(object sender, RoutedEventArgs e)
-        {
-            // Реализуйте сканирование QR-кода с камеры здесь
-        }
-
-
-
-        // распознование через цвет, дает сбои
-        private void ChangeQRColor_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
-
-            // Открываем диалоговое окно выбора цвета
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                System.Drawing.Color selectedColor = colorDialog.Color;
-
-                // Преобразуйте System.Drawing.Color в System.Windows.Media.Color
-                System.Windows.Media.Color mediaColor = System.Windows.Media.Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B);
-
-                // Создаем новый QR-код с выбранным цветом
-                CreateQRCodeWithColor(inputTextBox.Text, mediaColor);
-            }
-        }
-
-        private void CreateQRCodeWithColor(string dataToSign, System.Windows.Media.Color color)
-        {
-            string privateKeyPath = "C:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
-
-            if (!File.Exists(privateKeyPath))
-            {
-                MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
-                return;
-            }
-
-            using (RSA rsa = RSA.Create())
-            {
-                rsa.FromXmlString(File.ReadAllText(privateKeyPath));
-
-                byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
-                byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-                string signatureString = Convert.ToBase64String(signature);
-
-                string qrData = dataToSign + ";" + signatureString;
-
-                // Получаем выбранный ECC уровень
-                string selectedEccLevel = ecclevelbox.SelectedValue.ToString();
-
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-
-                // Используем выбранный ECC уровень
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, GetEccLevel(selectedEccLevel));
-                QRCode qrCode = new QRCode(qrCodeData);
-
-                // Преобразуем System.Media.Color в System.Drawing.Color
-                System.Drawing.Color qrColor = System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
-
-                Bitmap qrCodeImage = qrCode.GetGraphic(20, qrColor, System.Drawing.Color.White, true);
-
-                //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
-                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
-                if (!Directory.Exists(saveFolderPath))
-                {
-                    Directory.CreateDirectory(saveFolderPath);
-                }
-                string filePath = Path.Combine(saveFolderPath, $"QR_{saveTextBox.Text}.png");
-                qrCodeImage.Save(filePath);
-                //*************************************************
-
-                MemoryStream ms = new MemoryStream();
-                qrCodeImage.Save(ms, ImageFormat.Png);
-                var imageSource = new BitmapImage();
-                imageSource.BeginInit();
-                ms.Seek(0, SeekOrigin.Begin);
-                imageSource.StreamSource = ms;
-                imageSource.EndInit();
-
-                qrCodeImageElement.Source = imageSource;
-            }
-        }
-*/
+        
         private void Visit_QR_Click(object sender, RoutedEventArgs e)
         {
             //открыть окно с показром всех QR
@@ -320,27 +105,17 @@ namespace QR_Code_WPF
         // помощь
         private void Help_U_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Приветствуем вас в приложении QR-Code! Здесь вы сможете создавать разнообразные типы QR-кодов. Мы поддерживаем все - от обычных до более надежных с защитой ECC (Error Correction Capability) и даже возможностью добавления цвета.\r\n\r\nЭто приложение также предоставляет возможность создания QR-кодов с особым ключом - электронной подписью. Это означает, что созданные QR-коды можно считывать только с помощью этого приложения, обеспечивая дополнительный уровень безопасности и конфиденциальности.", "Информация QR-Code", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Приветствуем вас в приложении QR-Code! Здесь вы сможете создавать разнообразные типы QR-кодов. Мы поддерживаем все - от обычных до более надежных с защитой ECC (Error Correction Capability) и даже возможностью добавления цвета.\r\n\r\nЭто приложение также предоставляет возможность создания QR-кодов с особым ключом - электронной подписью. Это означает, что созданные QR-коды можно считывать только с помощью этого приложения, обеспечивая дополнительный уровень безопасности и конфиденциальности", "Информация QR-Code", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-
-        // прокрутка внутри ричбоксов
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Help_U_ECC_Click(object sender, RoutedEventArgs e)
         {
-            if (Keyboard.FocusedElement is RichTextBox richTextBox)
-            {
-                if (e.Key == Key.Up)
-                {
-                    richTextBox.LineUp();
-                    e.Handled = true;
-                }
-                else if (e.Key == Key.Down)
-                {
-                    richTextBox.LineDown();
-                    e.Handled = true;
-                }
-            }
+            MessageBox.Show("Когда говорят о \"уровне коррекции ошибок\" (Error Correction Level, ECC) в QR-кодах (от \"L\" до \"H\"), это означает, что QR-код способен восстановить часть информации, даже если часть QR-кода повреждена или искажена.\r\n\r\nУровни коррекции ошибок в QR-кодах представлены четырьмя уровнями: L (низкий), M (средний), Q (высокий) и H (очень высокий). Каждый уровень представляет разную степень коррекции ошибок:\r\n\r\n- Уровень L обладает наименьшей степенью коррекции ошибок, тогда как уровень H имеет самую высокую степень коррекции.\r\n- Уровень H, например, может восстановить большую часть информации, даже если значительная часть QR-кода повреждена, в то время как уровень L может справиться только с небольшими повреждениями.\r\n\r\nПомимо уровней L и H, в QR-кодах также существуют уровни M и Q. Уровень M обеспечивает среднюю степень коррекции ошибок между L и H. Уровень Q является высоким уровнем коррекции, позволяющим исправить больше ошибок, чем L, но меньше, чем H, обеспечивая точное считывание данных при сканировании", "Информация о защите ECC", MessageBoxButton.OK, MessageBoxImage.Information);
+
         }
+
+
+        
 
         private void CreateQr_Click(object sender, RoutedEventArgs e)
         {
@@ -357,33 +132,274 @@ namespace QR_Code_WPF
 
 
 
+
+
+
+
+
+        //МЕТОД ДЛЯ РАСШИФРОКИ ПОДПИСИ
+        private bool VerifySignature(string data, string signature)
+        {
+            string publicKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\publicKey.xml";
+
+            if (!File.Exists(publicKeyPath))
+            {
+                MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                return false;
+            }
+
+            using (RSA rsaPublic = RSA.Create())
+            {
+                rsaPublic.FromXmlString(File.ReadAllText(publicKeyPath));
+                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+                byte[] signatureBytes = Convert.FromBase64String(signature);
+                return rsaPublic.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+
+
+        /*private void BorderQRScan_Click(object sender, MouseButtonEventArgs e)
+        {
+            
+
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string imagePath = openFileDialog.FileName;
+                Bitmap qrCodeBitmap = new Bitmap(imagePath);
+                BarcodeReader reader = new BarcodeReader();
+                Result result = reader.Decode(qrCodeBitmap);
+
+                if (result != null)
+                {
+                    try
+                    {
+                        string qrData = result.Text;
+                        string[] parts = qrData.Split(';');
+                        string data = parts[0];
+                        string signature = parts[1];
+                        rrr = data;
+
+
+                        try
+                        {
+                            if (VerifySignature(data, signature))
+                            {
+                                MessageBox.Show(data);
+                                // Открываем URL в браузере
+                                Process.Start(data);
+                            }
+                            else
+                            {
+                                MessageBox.Show(data);
+                                MessageBox.Show("Недействительная подпись!1", "Ошибка", MessageBoxButton.OK);
+                            }
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Недействительная подпись!2", "Ошибка", MessageBoxButton.OK);
+                        }
+                    }
+                    catch
+                    {
+                        string qrData = result.Text;
+                        string data = qrData;
+                        rrr = data;
+
+
+                        try
+                        {
+                            if (data != "")
+                            {
+                                MessageBox.Show(data);
+                                // Открываем URL в браузере
+                                Process.Start(data);
+                            }
+                            else
+                            {
+                                MessageBox.Show(data);
+                                MessageBox.Show("Недействительная подпись!1", "Ошибка", MessageBoxButton.OK);
+                            }
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Недействительная подпись!2", "Ошибка", MessageBoxButton.OK);
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    MessageBox.Show(rrr);
+                    MessageBox.Show("QR-код не распознан!", "Ошибка", MessageBoxButton.OK);
+                }
+            }
+        }*/
+
+
+
+        string rrr = "*";
+        //СКАНИРОВАНИЕ QR
+        private void BorderQRScan_Click(object sender, MouseButtonEventArgs e)
+        {
+            string imagePath = string.Empty;
+            Bitmap qrCodeBitmap = null;
+            BarcodeReader reader = new BarcodeReader();
+            Result result = null;
+            string data = string.Empty;
+            string rrr = string.Empty;
+            bool wrong1 = false;
+            bool wrong2 = false;
+            int count = 0;
+
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                imagePath = openFileDialog.FileName;
+                qrCodeBitmap = new Bitmap(imagePath);
+                
+
+                for (int i = 0; i < 100; i++)
+                {
+                    result = reader.Decode(qrCodeBitmap);
+
+                    if (result != null)
+                    {
+                        string qrData = result.Text;
+                        string[] parts = qrData.Split(';');
+                        data = parts[0];
+                        rrr = data;
+
+                        try
+                        {
+                            if (parts.Length > 1)
+                            {
+                                string signature = parts[1];
+                                if (VerifySignature(data, signature))
+                                {
+                                    //MessageBox.Show(data);
+                                    if (count == 0)
+                                    {
+                                        MessageBox.Show(data);
+                                    }
+                                    count++;
+                                    Process.Start(data);
+                                    
+                                    
+                                    break; // Если подпись верна, завершаем цикл
+                                }
+                                else
+                                {
+                                    wrong1 = true;
+                                    
+                                }
+                            }
+                            else
+                            {
+                                //MessageBox.Show(data);
+                                if (count == 0)
+                                {
+                                    MessageBox.Show(data);
+                                }
+                                count++;
+                                Process.Start(data);
+
+                               
+                                break; // Если подпись отсутствует, завершаем цикл
+                            }
+                        }
+                        catch
+                        {
+                            wrong2 = true;
+                        }
+                    }
+                }
+
+                count = 0;
+
+                if (result == null)
+                {
+                    MessageBox.Show("QR-код не распознан!", "Ошибка", MessageBoxButton.OK);
+                }
+                
+                if (wrong1)
+                {
+                    MessageBox.Show("Недействительная подпись!1", "Ошибка", MessageBoxButton.OK);
+                }
+                else if (wrong2)
+                {
+                    MessageBox.Show("Недействительная подпись!2", "Ошибка", MessageBoxButton.OK);
+                }
+                
+            }
+        }
+
+
+
+
         //СОЗДАНИЕ QR-ОБЫКНОВЕННЫЙ
         private void OrdinaryQR_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = TxtBox_Link_Border1.Text;
             string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
-            bool isChecked = ChckBox_KEY.IsChecked ?? false;
+            bool isChecked = ChckBox_KEY1.IsChecked ?? false;
 
-            if (!File.Exists(privateKeyPath))
+            if (TxtBox_Link_Border1.Text != "" && TxtBox_SaveName_Border1.Text != "")
             {
-                MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
-                return;
-            }
-
-            if (isChecked)
-            {
-                using (RSA rsa = RSA.Create())
+                if (!File.Exists(privateKeyPath))
                 {
-                    rsa.FromXmlString(File.ReadAllText(privateKeyPath));
+                    MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                    return;
+                }
 
-                    byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
-                    byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-                    string signatureString = Convert.ToBase64String(signature);
+                if (isChecked)
+                {
+                    using (RSA rsa = RSA.Create())
+                    {
+                        rsa.FromXmlString(File.ReadAllText(privateKeyPath));
 
-                    string qrData = dataToSign + ";" + signatureString;
+                        byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
+                        byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                        string signatureString = Convert.ToBase64String(signature);
 
+                        string qrData = dataToSign + ";" + signatureString;
+
+                        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
+                        QRCode qrCode = new QRCode(qrCodeData);
+
+                        Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                        // Сохранение QR-кода
+                        string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                        if (!Directory.Exists(saveFolderPath))
+                        {
+                            Directory.CreateDirectory(saveFolderPath);
+                        }
+                        string filePath = Path.Combine(saveFolderPath, $"QROrdinaryK_{TxtBox_SaveName_Border1.Text}.png");
+                        qrCodeImage.Save(filePath);
+
+                        MemoryStream ms = new MemoryStream();
+                        qrCodeImage.Save(ms, ImageFormat.Png);
+                        BitmapImage imageSource = new BitmapImage();
+                        imageSource.BeginInit();
+                        ms.Seek(0, SeekOrigin.Begin);
+                        imageSource.StreamSource = ms;
+                        imageSource.EndInit();
+
+                        qrCodeImageElement.Source = imageSource;
+                    }
+                }
+                else
+                {
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.L);
                     QRCode qrCode = new QRCode(qrCodeData);
 
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
@@ -394,7 +410,7 @@ namespace QR_Code_WPF
                     {
                         Directory.CreateDirectory(saveFolderPath);
                     }
-                    string filePath = Path.Combine(saveFolderPath, $"QROrdinaryP_{TxtBox_SaveName_Border1.Text}.png");
+                    string filePath = Path.Combine(saveFolderPath, $"QROrdinaryNK_{TxtBox_SaveName_Border1.Text}.png");
                     qrCodeImage.Save(filePath);
 
                     MemoryStream ms = new MemoryStream();
@@ -407,34 +423,16 @@ namespace QR_Code_WPF
 
                     qrCodeImageElement.Source = imageSource;
                 }
+
+                TxtBox_Link_Border1.Clear();
+                TxtBox_SaveName_Border1.Clear();
             }
             else
             {
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
-                // Сохранение QR-кода
-                string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
-                if (!Directory.Exists(saveFolderPath))
-                {
-                    Directory.CreateDirectory(saveFolderPath);
-                }
-                string filePath = Path.Combine(saveFolderPath, $"QROrdinaryNp_{TxtBox_SaveName_Border1.Text}.png");
-                qrCodeImage.Save(filePath);
-
-                MemoryStream ms = new MemoryStream();
-                qrCodeImage.Save(ms, ImageFormat.Png);
-                BitmapImage imageSource = new BitmapImage();
-                imageSource.BeginInit();
-                ms.Seek(0, SeekOrigin.Begin);
-                imageSource.StreamSource = ms;
-                imageSource.EndInit();
-
-                qrCodeImageElement.Source = imageSource;
+                MessageBox.Show("Заполните все нужные поля, для построения QR-Code!", "Ошибка! Не все поля заполнены", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            
         }
 
 
@@ -454,12 +452,239 @@ namespace QR_Code_WPF
 
         private void CreateQRCodeButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(selectedColor.ToString());
-            selectedColor = System.Windows.Media.Colors.Black; // Инициализация выбранного цвета черным цветом или любым другим значением по умолчанию
+            string dataToSign = TxtBox_Link_Border2.Text;
+            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            bool isChecked = ChckBox_KEY2.IsChecked ?? false;
+
+            if (TxtBox_Link_Border2.Text != "" && TxtBox_SaveName_Border2.Text != "")
+            {
+                if (!File.Exists(privateKeyPath))
+                {
+                    MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                    return;
+                }
+
+                if (isChecked)
+                {
+                    using (RSA rsa = RSA.Create())
+                    {
+                        rsa.FromXmlString(File.ReadAllText(privateKeyPath));
+
+                        byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
+                        byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                        string signatureString = Convert.ToBase64String(signature);
+
+                        string qrData = dataToSign + ";" + signatureString;
+
+                        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+
+                        // Используем выбранный ECC уровень
+                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
+                        QRCode qrCode = new QRCode(qrCodeData);
+
+                        // Преобразуем System.Media.Color в System.Drawing.Color
+                        System.Drawing.Color qrColor = System.Drawing.Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B);
+
+                        Bitmap qrCodeImage = qrCode.GetGraphic(20, qrColor, System.Drawing.Color.White, true);
+
+                        //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
+                        string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                        if (!Directory.Exists(saveFolderPath))
+                        {
+                            Directory.CreateDirectory(saveFolderPath);
+                        }
+                        string filePath = Path.Combine(saveFolderPath, $"QRColorK_{TxtBox_SaveName_Border2.Text}.png");
+                        qrCodeImage.Save(filePath);
+                        //*************************************************
+
+                        MemoryStream ms = new MemoryStream();
+                        qrCodeImage.Save(ms, ImageFormat.Png);
+                        var imageSource = new BitmapImage();
+                        imageSource.BeginInit();
+                        ms.Seek(0, SeekOrigin.Begin);
+                        imageSource.StreamSource = ms;
+                        imageSource.EndInit();
+
+                        qrCodeImageElement.Source = imageSource;
+                    }
+                }
+                else
+                {
+                    string qrData = dataToSign;
+
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+
+                    // Используем выбранный ECC уровень
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
+                    QRCode qrCode = new QRCode(qrCodeData);
+
+                    // Преобразуем System.Media.Color в System.Drawing.Color
+                    System.Drawing.Color qrColor = System.Drawing.Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B);
+
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20, qrColor, System.Drawing.Color.White, true);
+
+                    string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                    if (!Directory.Exists(saveFolderPath))
+                    {
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                    string filePath = Path.Combine(saveFolderPath, $"QRColorNK_{TxtBox_SaveName_Border2.Text}.png");
+                    qrCodeImage.Save(filePath);
+
+                    MemoryStream ms = new MemoryStream();
+                    qrCodeImage.Save(ms, ImageFormat.Png);
+                    var imageSource = new BitmapImage();
+                    imageSource.BeginInit();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    imageSource.StreamSource = ms;
+                    imageSource.EndInit();
+
+                    qrCodeImageElement.Source = imageSource;
+                }
+                selectedColor = System.Windows.Media.Colors.Black; // Инициализация выбранного цвета черным цветом или любым другим значением по умолчанию
+
+                TxtBox_Link_Border2.Clear();
+                TxtBox_SaveName_Border2.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Заполните все нужные поля, для построения QR-Code!", "Ошибка! Не все поля заполнены", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
 
         }
 
+
+
+        // СОЗДАНИЕ QR C ECC НАДЕЖНОСТЬЮ
+        private void CreateQRECC_Click(object sender, RoutedEventArgs e)
+        {
+            string dataToSign = TxtBox_Link_Border3.Text;
+            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            bool isChecked = ChckBox_KEY3.IsChecked ?? false;
+
+
+            if (TxtBox_Link_Border3.Text != "" && TxtBox_SaveName_Border3.Text != "")
+            {
+                if (!File.Exists(privateKeyPath))
+                {
+                    MessageBox.Show("Приватный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                    return;
+                }
+
+                if (isChecked)
+                {
+                    using (RSA rsa = RSA.Create())
+                    {
+                        rsa.FromXmlString(File.ReadAllText(privateKeyPath));
+
+                        byte[] dataBytes = Encoding.UTF8.GetBytes(dataToSign);
+                        byte[] signature = rsa.SignData(dataBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                        string signatureString = Convert.ToBase64String(signature);
+
+                        string qrData = dataToSign + ";" + signatureString;
+
+                        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
+
+                        switch ((int)Slider_BorderECC.Value)
+                        {
+                            case 0:
+                                qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
+                                break;
+                            case 1:
+                                qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.M);
+                                break;
+                            case 2:
+                                qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                                break;
+                            case 3:
+                                qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.H);
+                                break;
+                        }
+                        QRCode qrCode = new QRCode(qrCodeData);
+
+                        Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                        // Сохранение QR-кода
+                        string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                        if (!Directory.Exists(saveFolderPath))
+                        {
+                            Directory.CreateDirectory(saveFolderPath);
+                        }
+                        string filePath = Path.Combine(saveFolderPath, $"QROrdinaryK_{TxtBox_SaveName_Border3.Text}.png");
+                        qrCodeImage.Save(filePath);
+
+                        MemoryStream ms = new MemoryStream();
+                        qrCodeImage.Save(ms, ImageFormat.Png);
+                        BitmapImage imageSource = new BitmapImage();
+                        imageSource.BeginInit();
+                        ms.Seek(0, SeekOrigin.Begin);
+                        imageSource.StreamSource = ms;
+                        imageSource.EndInit();
+
+                        qrCodeImageElement.Source = imageSource;
+                    }
+                }
+                else
+                {
+                    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.L);
+
+                    switch ((int)Slider_BorderECC.Value)
+                    {
+                        case 0:
+                            qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.L);
+                            break;
+                        case 1:
+                            qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.M);
+                            break;
+                        case 2:
+                            qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.Q);
+                            break;
+                        case 3:
+                            qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.H);
+                            break;
+                    }
+                    QRCode qrCode = new QRCode(qrCodeData);
+
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                    // Сохранение QR-кода
+                    string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
+                    if (!Directory.Exists(saveFolderPath))
+                    {
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                    string filePath = Path.Combine(saveFolderPath, $"QROrdinaryNK_{TxtBox_SaveName_Border3.Text}.png");
+                    qrCodeImage.Save(filePath);
+
+                    MemoryStream ms = new MemoryStream();
+                    qrCodeImage.Save(ms, ImageFormat.Png);
+                    BitmapImage imageSource = new BitmapImage();
+                    imageSource.BeginInit();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    imageSource.StreamSource = ms;
+                    imageSource.EndInit();
+
+                    qrCodeImageElement.Source = imageSource;
+                }
+
+                TxtBox_Link_Border3.Clear();
+                TxtBox_SaveName_Border3.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Заполните все нужные поля, для построения QR-Code!", "Ошибка! Не все поля заполнены", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
+        }
+
+
         
+
+
+        // СОЗДАНИЕ ФУЛЛ QR
     }
 }

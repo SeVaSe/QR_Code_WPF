@@ -8,7 +8,7 @@
            Style="{StaticResource ModernWindowStyle}" Title="QR-Code"
 
     WindowStartupLocation="CenterScreen"
-    PreviewKeyDown="Window_PreviewKeyDown">
+    >
 
     <Border Background="#272537" CornerRadius="20" >
         <Grid>
@@ -232,7 +232,7 @@
 
                                         <Button Content="Создать" Style="{StaticResource ModernButtonBorder1}" Margin="0,10,10,10" Click="OrdinaryQR_Click"/>
                                         <TextBlock Grid.Column="1" Text="Эл. подпись" FontSize="18" Style="{StaticResource ModernTextBlock}" FontWeight="Bold"  Margin="5,29,23,29"/>
-                                        <CheckBox x:Name="ChckBox_KEY" IsChecked="True" Cursor="Hand" VerticalAlignment="Center" Width="128" Height="16" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
+                                        <CheckBox x:Name="ChckBox_KEY1" IsChecked="True" Cursor="Hand" VerticalAlignment="Center" Width="128" Height="16" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
                                             <CheckBox.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="-1"/>
@@ -321,7 +321,7 @@
 
                                         <Button Content="Создать цветной" Style="{StaticResource ModernButtonBorder2}" Margin="0,10,10,10" Click="CreateQRCodeButton_Click"/>
                                         <TextBlock Grid.Column="1" Text="Эл. подпись" FontSize="18" Style="{StaticResource ModernTextBlock}" FontWeight="Bold"  Margin="5,10,23,48"/>
-                                        <CheckBox IsChecked="True" Cursor="Hand" VerticalAlignment="Top" Width="128" Height="16" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Margin="0,13,0,0">
+                                        <CheckBox x:Name="ChckBox_KEY2" IsChecked="True" Cursor="Hand" VerticalAlignment="Top" Width="128" Height="16" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Margin="0,13,0,0">
                                             <CheckBox.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="-1"/>
@@ -366,10 +366,28 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="10*"/>
                                     <RowDefinition Height="40*"/>
-                                    <RowDefinition Height="100*"/>
-                                    <RowDefinition Height="255*"/>
+                                    <RowDefinition Height="155*"/>
+                                    <RowDefinition Height="200*"/>
                                     <RowDefinition Height="10*"/>
                                 </Grid.RowDefinitions>
+
+                                <Button Content="?"
+                                FontFamily="Fonts/#Dosis" 
+                                FontSize="30"
+                                Cursor="Hand"
+                                Background="Transparent"
+                                Foreground="#fcfce8" 
+                                FontWeight="Bold"
+                                ToolTip="Помощь"
+                                Style="{StaticResource ButtonClearTheme}" 
+                                BorderThickness="0" Click="Help_U_ECC_Click"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top" Margin="317,5,0,0" Width="31" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2">
+
+                                    <Button.Effect>
+                                        <DropShadowEffect Color="Yellow" ShadowDepth="0" BlurRadius="20"/>
+                                    </Button.Effect>
+                                </Button>
 
                                 <!--Название блока-->
                                 <TextBlock Text="QR c ECC защитой"
@@ -386,17 +404,64 @@
                                     </TextBlock.Effect>
                                 </TextBlock>
 
+
                                 <!--Описание блока-->
                                 <TextBlock Grid.Column="1" Grid.Row="2"
                    Style="{StaticResource ModernTextBlock}"
                    TextWrapping="Wrap"
                    FontSize="20"
-                   Text=""/>
-
+                   Text="Уровень ECC в QR-кодах (L до H) определяет, насколько сканеры могут исправить повреждения: H лучше восстанавливает данные, L хуже, помогая верно считывать информацию при повреждениях"/>
                                 <Grid Grid.Column="1" Grid.Row="3">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="60*"/>
+                                        <RowDefinition Height="60*"/>
+                                        <RowDefinition Height="80*"/>
+                                    </Grid.RowDefinitions>
 
+                                    <!--TxtBox для ввода ссылки-->
+                                    <TextBox HorizontalAlignment="Center" Name="TxtBox_Link_Border3" Style="{StaticResource ModernTextBox}" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" Height="54" Margin="0,6,0,0"/>
+                                    <!--TxtBox для ввода названия-->
+                                    <TextBox HorizontalAlignment="Center" Name="TxtBox_SaveName_Border3" Grid.Row="1" Style="{StaticResource ModernTextBoxSave}" TextWrapping="Wrap" VerticalAlignment="Top" Width="340" Height="54" Margin="0,5,0,0"/>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Content="Создать QR с ECC" Style="{StaticResource ModernButtonECC}" Margin="0,10,10,10" Click="CreateQRECC_Click"/>
+                                        <TextBlock Grid.Column="1" Text="Эл. подпись" FontSize="18" Style="{StaticResource ModernTextBlock}" FontWeight="Bold"  Margin="5,10,23,48"/>
+                                        <CheckBox x:Name="ChckBox_KEY3" IsChecked="True" Cursor="Hand" VerticalAlignment="Top" Width="128" Height="16" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Margin="0,13,0,0">
+                                            <CheckBox.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="-1"/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </CheckBox.RenderTransform>
+                                        </CheckBox>
+
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="8,48,-8,3" ToolTip="ECC защита" >
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="AliceBlue" FontSize="15" Content="L   "/>
+                                                <Label Foreground="AliceBlue" FontSize="15" Content="M   "/>
+                                                <Label Foreground="AliceBlue" FontSize="15" Content="Q   "/>
+                                                <Label Foreground="AliceBlue" FontSize="15" Content="H"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <Slider x:Name="Slider_BorderECC" ToolTip="ECC защита" Margin="5,37,5,21" Minimum="0" Maximum="3" IsSnapToTickEnabled="True" Ticks="0 1 2 3" Grid.Column="1"/>
+
+
+
+
+
+
+
+                                    </Grid>
                                 </Grid>
                             </Grid>
+
+
 
                         </Border>
                     </StackPanel>
@@ -404,7 +469,7 @@
 
                 <!--RIGHT-->
                 <!--Border с приветственным текстом-->
-                <Border Background="#2a273d" Grid.Column="3" Margin="35,65,36,55" Width="300" Height="300" Grid.Row="1" CornerRadius="20">
+                <Border Cursor="Hand" ToolTip="Выбрать любой созданный QR-код и сканировать его (если QR-код имеет электронную подпись, то он его прочтет и откроет)" Background="#2a273d" Grid.Column="3" Margin="35,65,36,55" Width="300" Height="300" Grid.Row="1" CornerRadius="20" MouseLeftButtonDown="BorderQRScan_Click">
                     <Border.Effect>
                         <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="20"/>
                     </Border.Effect>
