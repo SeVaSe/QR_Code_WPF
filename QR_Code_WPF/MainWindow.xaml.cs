@@ -135,7 +135,7 @@ namespace QR_Code_WPF
 
 
 
-
+        private bool wrongVerify = false;
 
         //МЕТОД ДЛЯ РАСШИФРОКИ ПОДПИСИ
         private bool VerifySignature(string data, string signature)
@@ -144,7 +144,8 @@ namespace QR_Code_WPF
 
             if (!File.Exists(publicKeyPath))
             {
-                MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                //MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+                wrongVerify = true;
                 return false;
             }
 
@@ -155,6 +156,13 @@ namespace QR_Code_WPF
                 byte[] signatureBytes = Convert.FromBase64String(signature);
                 return rsaPublic.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
             }
+
+            if (wrongVerify)
+            {
+                MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
+            }
+
+
         }
 
 
@@ -265,7 +273,7 @@ namespace QR_Code_WPF
                 qrCodeBitmap = new Bitmap(imagePath);
                 
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 30; i++) //100
                 {
                     result = reader.Decode(qrCodeBitmap);
 
@@ -330,11 +338,13 @@ namespace QR_Code_WPF
                 
                 if (wrong1)
                 {
-                    MessageBox.Show("Недействительная подпись!1", "Ошибка", MessageBoxButton.OK);
+                    MessageBox.Show(data);
+                    MessageBox.Show("Недействительная подпись!1 ИНТЕРНЕТ", "Ошибка", MessageBoxButton.OK);
                 }
                 else if (wrong2)
                 {
-                    MessageBox.Show("Недействительная подпись!2", "Ошибка", MessageBoxButton.OK);
+                    MessageBox.Show(data);
+                    MessageBox.Show("Недействительная подпись!2 СИСТЕМНАЯ ОШИБКА КЛЮЧА", "Ошибка", MessageBoxButton.OK);
                 }
                 
             }
@@ -347,8 +357,11 @@ namespace QR_Code_WPF
         private void OrdinaryQR_Click(object sender, RoutedEventArgs e)
         {
             string dataToSign = TxtBox_Link_Border1.Text;
-            string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
+            string privateKeyPath = Path.Combine(Environment.CurrentDirectory, "KeyFolder\\privateKey.xml"); // должен находится, где и исполняемый файл 
+            //string privateKeyPath = "D:\\VISUAL_STUDIO_\\Vs_Project\\C#\\OTHER_WORK\\QR_Code_WPF_N\\QR_Code_WPF\\KeyFolder\\privateKey.xml";
             bool isChecked = ChckBox_KEY1.IsChecked ?? false;
+
+            MessageBox.Show(privateKeyPath);
 
             if (TxtBox_Link_Border1.Text != "" && TxtBox_SaveName_Border1.Text != "")
             {
