@@ -13,6 +13,9 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using QR_Code_WPF.WindowPage;
+using QR_Code_WPF.DataBase;
+using QR_Code_WPF.Classes;
 
 namespace QR_Code_WPF
 {
@@ -124,7 +127,9 @@ namespace QR_Code_WPF
 
         private void SpisoDBQR_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Вы перешли в СПИСОК-QR");
+            ListBDQr_Window QrWindow = new ListBDQr_Window();
+            QrWindow.Show();
+            this.Close();
         }
 
 
@@ -385,7 +390,7 @@ namespace QR_Code_WPF
 
                         QRCodeGenerator qrGenerator = new QRCodeGenerator();
                         QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
-                        QRCode qrCode = new QRCode(qrCodeData);
+                        QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                         Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
@@ -407,13 +412,19 @@ namespace QR_Code_WPF
                         imageSource.EndInit();
 
                         qrCodeImageElement.Source = imageSource;
+
+
+
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(1, true, $"QROrdinaryK_{TxtBox_SaveName_Border1.Text}", DateTime.Now, filePath, 1);
                     }
                 }
                 else
                 {
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
                     QRCodeData qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.L);
-                    QRCode qrCode = new QRCode(qrCodeData);
+                    QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
@@ -435,6 +446,12 @@ namespace QR_Code_WPF
                     imageSource.EndInit();
 
                     qrCodeImageElement.Source = imageSource;
+
+
+
+                    QRdbEntities db = new QRdbEntities();
+                    DatabaseManager dbManager = new DatabaseManager(db);
+                    dbManager.InsertQRCode(1, false, $"QROrdinaryNK_{TxtBox_SaveName_Border1.Text}", DateTime.Now, filePath, 1);
                 }
 
                 TxtBox_Link_Border1.Clear();
@@ -493,7 +510,7 @@ namespace QR_Code_WPF
 
                         // Используем выбранный ECC уровень
                         QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
-                        QRCode qrCode = new QRCode(qrCodeData);
+                        QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                         // Преобразуем System.Media.Color в System.Drawing.Color
                         System.Drawing.Color qrColor = System.Drawing.Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B);
@@ -519,6 +536,12 @@ namespace QR_Code_WPF
                         imageSource.EndInit();
 
                         qrCodeImageElement.Source = imageSource;
+
+
+
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(2, true, $"QRColorK_{TxtBox_SaveName_Border2.Text}", DateTime.Now, filePath, 1);
                     }
                 }
                 else
@@ -529,7 +552,7 @@ namespace QR_Code_WPF
 
                     // Используем выбранный ECC уровень
                     QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
-                    QRCode qrCode = new QRCode(qrCodeData);
+                    QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                     // Преобразуем System.Media.Color в System.Drawing.Color
                     System.Drawing.Color qrColor = System.Drawing.Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B);
@@ -553,6 +576,12 @@ namespace QR_Code_WPF
                     imageSource.EndInit();
 
                     qrCodeImageElement.Source = imageSource;
+
+
+
+                    QRdbEntities db = new QRdbEntities();
+                    DatabaseManager dbManager = new DatabaseManager(db);
+                    dbManager.InsertQRCode(2, false, $"QRColorNK_{TxtBox_SaveName_Border2.Text}", DateTime.Now, filePath, 1);
                 }
                 selectedColor = System.Windows.Media.Colors.Black; // Инициализация выбранного цвета черным цветом или любым другим значением по умолчанию
 
@@ -575,6 +604,7 @@ namespace QR_Code_WPF
             string dataToSign = TxtBox_Link_Border3.Text;
             string privateKeyPath = Path.Combine(Environment.CurrentDirectory, "KeyFolder\\privateKey.xml"); // должен находится, где и исполняемый файл 
             bool isChecked = ChckBox_KEY3.IsChecked ?? false;
+            int countECC = 0;
 
 
             if (TxtBox_Link_Border3.Text != "" && TxtBox_SaveName_Border3.Text != "")
@@ -603,19 +633,23 @@ namespace QR_Code_WPF
                         switch ((int)Slider_BorderECC.Value)
                         {
                             case 0:
+                                countECC = 1;
                                 qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.L);
                                 break;
                             case 1:
+                                countECC = 2;
                                 qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.M);
                                 break;
                             case 2:
+                                countECC = 3;
                                 qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
                                 break;
                             case 3:
+                                countECC = 4;
                                 qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.H);
                                 break;
                         }
-                        QRCode qrCode = new QRCode(qrCodeData);
+                        QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                         Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
@@ -625,7 +659,7 @@ namespace QR_Code_WPF
                         {
                             Directory.CreateDirectory(saveFolderPath);
                         }
-                        string filePath = Path.Combine(saveFolderPath, $"QROrdinaryK_{TxtBox_SaveName_Border3.Text}.png");
+                        string filePath = Path.Combine(saveFolderPath, $"QREccK_{TxtBox_SaveName_Border3.Text}.png");
                         qrCodeImage.Save(filePath);
 
                         MemoryStream ms = new MemoryStream();
@@ -637,6 +671,40 @@ namespace QR_Code_WPF
                         imageSource.EndInit();
 
                         qrCodeImageElement.Source = imageSource;
+
+
+                        if (countECC == 1)
+                        {
+                            QRdbEntities db = new QRdbEntities();
+                            DatabaseManager dbManager = new DatabaseManager(db);
+                            dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
+                        }
+                        else if (countECC == 2) 
+                        {
+                            QRdbEntities db = new QRdbEntities();
+                            DatabaseManager dbManager = new DatabaseManager(db);
+                            dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 2);
+                        }
+                        else if (countECC == 3)
+                        {
+                            QRdbEntities db = new QRdbEntities();
+                            DatabaseManager dbManager = new DatabaseManager(db);
+                            dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 3);
+                        }
+                        else if (countECC == 4)
+                        {
+                            QRdbEntities db = new QRdbEntities();
+                            DatabaseManager dbManager = new DatabaseManager(db);
+                            dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 4);
+                        }
+                        else
+                        {
+                            QRdbEntities db = new QRdbEntities();
+                            DatabaseManager dbManager = new DatabaseManager(db);
+                            dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
+                        }
+
+
                     }
                 }
                 else
@@ -647,19 +715,23 @@ namespace QR_Code_WPF
                     switch ((int)Slider_BorderECC.Value)
                     {
                         case 0:
+                            countECC = 1;
                             qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.L);
                             break;
                         case 1:
+                            countECC = 2;
                             qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.M);
                             break;
                         case 2:
+                            countECC = 3;
                             qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.Q);
                             break;
                         case 3:
+                            countECC = 4;
                             qrCodeData = qrGenerator.CreateQrCode(dataToSign, QRCodeGenerator.ECCLevel.H);
                             break;
                     }
-                    QRCode qrCode = new QRCode(qrCodeData);
+                    QRCoder.QRCode qrCode = new QRCoder.QRCode(qrCodeData);
 
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
@@ -669,7 +741,7 @@ namespace QR_Code_WPF
                     {
                         Directory.CreateDirectory(saveFolderPath);
                     }
-                    string filePath = Path.Combine(saveFolderPath, $"QROrdinaryNK_{TxtBox_SaveName_Border3.Text}.png");
+                    string filePath = Path.Combine(saveFolderPath, $"QREccNK_{TxtBox_SaveName_Border3.Text}.png");
                     qrCodeImage.Save(filePath);
 
                     MemoryStream ms = new MemoryStream();
@@ -681,6 +753,40 @@ namespace QR_Code_WPF
                     imageSource.EndInit();
 
                     qrCodeImageElement.Source = imageSource;
+
+
+
+
+                    if (countECC == 1)
+                    {
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
+                    }
+                    else if (countECC == 2)
+                    {
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 2);
+                    }
+                    else if (countECC == 3)
+                    {
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 3);
+                    }
+                    else if (countECC == 4)
+                    {
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 4);
+                    }
+                    else
+                    {
+                        QRdbEntities db = new QRdbEntities();
+                        DatabaseManager dbManager = new DatabaseManager(db);
+                        dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
+                    }
                 }
 
                 TxtBox_Link_Border3.Clear();
@@ -698,6 +804,5 @@ namespace QR_Code_WPF
         
 
 
-        // СОЗДАНИЕ ФУЛЛ QR
     }
 }

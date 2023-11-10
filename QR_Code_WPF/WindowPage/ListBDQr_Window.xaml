@@ -1,0 +1,147 @@
+﻿<Window x:Class="QR_Code_WPF.WindowPage.ListBDQr_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QR_Code_WPF.WindowPage"
+        mc:Ignorable="d"
+               Style="{StaticResource ModernWindowStyle}" Title="QR-Code"
+
+WindowStartupLocation="CenterScreen"
+>
+
+<Border Background="#272537" CornerRadius="20" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+
+
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="63*"/>
+            <RowDefinition Height="595*"/>
+            <RowDefinition Height="26*"/>
+        </Grid.RowDefinitions>
+
+
+        <!--нижняя строка-->
+        <Border  Background="#222030" BorderThickness="0" CornerRadius="0, 0, 20, 20" Grid.Row="2" Grid.ColumnSpan="3"/>
+        <!--верхняя строка-->
+        <Border  Background="#1b192b" BorderThickness="0" CornerRadius="20, 20, 0, 0" Grid.ColumnSpan="3"
+             MouseLeftButtonDown="Window_MouseLeftButtonDown"
+MouseMove="Window_MouseMove" Cursor="SizeAll">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200*"/>
+                    <ColumnDefinition Width="200*"/>
+                    <ColumnDefinition Width="200*"/>
+                    <ColumnDefinition Width="200*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="QR-Code"
+                  Style="{StaticResource ModernTextBlock}"
+                  FontSize="30"
+                  FontWeight="Bold"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top" Width="152" Margin="38,7,0,0">
+
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="20"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+
+                <Button Content="Создание QR-Code"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="20"
+                Click="CreateQr_Click" 
+                Grid.Column="1"
+                Cursor="Hand"
+                Background="Transparent"
+                Foreground="AliceBlue"
+                BorderThickness="0"
+                ToolTip="Создайте QR (Вы здесь сейчас)"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Style="{StaticResource ButtonClearTheme}" Margin="0,14,0,0"/>
+
+                <Button Content="Список QR-Code"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="20"
+                ToolTip="Просмотреть и отредактировать список все QR (Нажмите чтобы перейти)"
+                Click="SpisoDBQR_Click" 
+                Grid.Column="2"
+                Cursor="Hand"
+                Background="Transparent"
+                Foreground="AliceBlue"
+                BorderThickness="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Style="{StaticResource ButtonClearTheme}" Margin="0,14,0,0"/>
+
+                <Button Content="?"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="30"
+                Cursor="Hand"
+                Background="Transparent"
+                Foreground="#fcfce8" 
+                FontWeight="Bold"
+                ToolTip="Помощь"
+                Style="{StaticResource ButtonClearTheme}" 
+                BorderThickness="0" Click="Help_U_Click"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="19,7,0,0" Width="31" Grid.Column="3">
+
+                    <Button.Effect>
+                        <DropShadowEffect Color="Yellow" ShadowDepth="0" BlurRadius="20"/>
+                    </Button.Effect>
+                </Button>
+
+                <Button Content="❌"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="17" 
+                Cursor="Hand"
+                Grid.Column="3"
+                Background="Transparent"
+                Foreground="AliceBlue"
+                    Style="{StaticResource ButtonClearTheme}"
+                BorderThickness="0" Click="Exit_Click"
+                HorizontalAlignment="Left"
+                FontWeight="Bold"
+                VerticalAlignment="Top" Margin="159,16,0,0" RenderTransformOrigin="0.494,0.547">
+                </Button>
+
+                <Button Content="━"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="40" 
+                Grid.Column="3"
+                Cursor="Hand"
+                Background="Transparent"
+                Foreground="AliceBlue"
+                FontWeight="Bold"
+                    Style="{StaticResource ButtonClearTheme}" 
+                BorderThickness="0" Click="Svernut_Click" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" Margin="112,0,0,0" Width="31"/>
+
+                <Button Content="⟲"
+                FontFamily="Fonts/#Dosis" 
+                FontSize="30" 
+                Grid.Column="3"
+                Cursor="Hand"
+                Background="Transparent"
+                Foreground="AliceBlue"
+                FontWeight="Bold"
+                Style="{StaticResource ButtonClearTheme}" 
+                BorderThickness="0" Click="Perezapusk_Click" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" Margin="70,8,0,0" Width="31"/>
+            </Grid>
+        </Border>
+
+
+
+
+
+        </Grid>
+    </Border>
+</Window>
