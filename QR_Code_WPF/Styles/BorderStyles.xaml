@@ -3,14 +3,14 @@
 
     <!--Создание QR-->
     <Style TargetType="{x:Type Border}" x:Key="ModernBorderQR">
-        <Setter Property="Background" Value="#014753"/>
+        <Setter Property="Background" Value="#2a273d"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
 
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect ShadowDepth="0" Direction="320" Color="Black" Opacity="20"/>
+                <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="15"/>
             </Setter.Value>
         </Setter>
     </Style>

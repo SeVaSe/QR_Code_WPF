@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using QR_Code_WPF.DataBase;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using ZXing;
+using static QR_Code_WPF.Classes.DatabaseManager;
 
 namespace QR_Code_WPF.WindowPage
 {
@@ -19,9 +19,16 @@ namespace QR_Code_WPF.WindowPage
     /// </summary>
     public partial class ListBDQr_Window : Window
     {
+
         public ListBDQr_Window()
         {
             InitializeComponent();
+            LoadQRData();
+            DataContext = this;
+
+            // Инициализируйте вашу команду сканирования (ScanCommand) здесь
+            ScanCommand = new RelayCommand(ScanExecute, CanScanExecute);
+
         }
 
         private void Visit_QR_Click(object sender, RoutedEventArgs e)
@@ -126,5 +133,215 @@ namespace QR_Code_WPF.WindowPage
         {
             MessageBox.Show("Вы уже находитесь в данном разделе", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+
+
+
+
+        //модель базы
+        public class QRViewModel
+        {
+            public int QRCodeID { get; set; }
+            public string QRName { get; set; }
+            public string QRType { get; set; }
+            public string ECCLevel { get; set; }
+            public DateTime CreationDate { get; set; }
+            public string HasSignature { get; set; }
+            public string ImagePath { get; set; }
+
+
+
+
+        }
+
+
+        private void LoadQRData()
+        {
+            using (var dbContext = new QRdbEntities())
+            {
+                var qrViewModels = dbContext.QRCode
+                    .Select(q => new QRViewModel
+                    {
+                        QRCodeID = q.QRCodeID,
+                        QRName = q.QRCodeName,
+                        QRType = q.QRType.TypeName,
+                        ECCLevel = q.ErrorCorrectionLevel.LevelName,
+                        CreationDate = q.CreationDate,
+                        HasSignature = q.HasSignature ? "Да" : "Нет",
+                        ImagePath = q.PhotoPath
+                    })
+                    .ToList();
+
+                ScrollVieverQRDB.DataContext = qrViewModels;
+            }
+        }
+
+
+
+
+
+
+
+        //КНОПКА ДЛЯ УДАЛЕНИЯ QR
+        private RelayCommand _deleteCommand;
+
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                if (_deleteCommand == null)
+                {
+                    _deleteCommand = new RelayCommand(
+                        parameter => DeleteCommandExecute(parameter),
+                        parameter => CanDeleteCommandExecute(parameter)
+                    );
+                }
+                return _deleteCommand;
+            }
+        }
+
+        private bool CanDeleteCommandExecute(object parameter)
+        {
+            return true; // Здесь можно добавить условия, при которых команда будет доступна или недоступна
+        }
+
+        private void DeleteCommandExecute(object parameter)
+        {
+            if (parameter is QRViewModel qrViewModel)
+            {
+                DeleteQRCode(qrViewModel.QRCodeID);
+                LoadQRData(); // Обновляем данные после удаления
+                MessageBox.Show($"Удален QR - {qrViewModel.QRName}", "Удаление QR", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+
+        public void DeleteQRCode(int qrCodeId)
+        {
+            using (var dbContext = new QRdbEntities())
+            {
+                var qrCode = dbContext.QRCode.FirstOrDefault(q => q.QRCodeID == qrCodeId);
+                if (qrCode != null)
+                {
+                    dbContext.QRCode.Remove(qrCode);
+                    dbContext.SaveChanges();
+                }
+            }
+        }
+
+
+
+
+
+
+
+        // СКАНИРОВАНИЕ QR
+        bool wrongVerify = false;
+
+        private bool VerifySignature(string data, string signature)
+        {
+            string publicKeyPath = System.IO.Path.Combine(Environment.CurrentDirectory, "KeyFolder\\publicKey.xml");
+
+            if (!File.Exists(publicKeyPath))
+            {
+                wrongVerify = true;
+                MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            using (RSA rsaPublic = RSA.Create())
+            {
+                rsaPublic.FromXmlString(File.ReadAllText(publicKeyPath));
+                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+                byte[] signatureBytes = Convert.FromBase64String(signature);
+                return rsaPublic.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+
+
+
+
+
+
+        public ICommand ScanCommand { get; }
+
+        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var border = (Border)sender;
+            var qrCodeViewModel = (QRViewModel)border.DataContext;
+            ScanExecute(qrCodeViewModel.ImagePath);
+        }
+
+        private void ScanExecute(object parameter)
+        {
+            if (parameter is string imagePath)
+            {
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    MessageBox.Show("Путь к изображению не указан!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                MessageBox.Show($"Сканирование QR-кода на изображении: {imagePath}", "Идет сканирование...", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                try
+                {
+                    Bitmap qrCodeBitmap = new Bitmap(imagePath);
+                    BarcodeReader reader = new BarcodeReader();
+                    Result result = reader.Decode(qrCodeBitmap);
+
+                    if (result != null)
+                    {
+                        string qrData = result.Text;
+
+                        string[] parts = qrData.Split(';');
+                        string data = parts[0];
+
+                        if (parts.Length > 1)
+                        {
+                            string signature = parts[1];
+                            if (VerifySignature(data, signature))
+                            {
+                                Process.Start(data);
+                                MessageBox.Show($"QR-код успешно обработан. Будет открыта ссылка: {data}", "Успешный скан", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Проверьте свое подключение к интернету!", "Ошибка с подключением", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                        else
+                        {
+                            Process.Start(data);
+                            MessageBox.Show($"QR-код успешно обработан. Будет открыта ссылка: {data}", "Успешный скан", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("QR-код не распознан!", "Ошибка сканирования", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Исключение при обработке QR-кода: {ex.Message}", "Не предвиденное исключение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+
+
+        private bool CanScanExecute(object parameter)
+        {
+            return true;
+        }
+
+
+
+
+
+
+
+
     }
 }

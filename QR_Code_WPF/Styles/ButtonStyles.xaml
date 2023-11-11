@@ -342,4 +342,66 @@
     </Style>
 
 
+
+    <Style TargetType="{x:Type Button}" x:Key="ModernButtonQRBDFull">
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Margin" Value="5"/>
+        <!-- Синий цвет по умолчанию -->
+        <Setter Property="Background" Value="#16103b"/>
+        <!-- Белый цвет текста по умолчанию -->
+        <Setter Property="Foreground" Value="White"/>
+        <!-- Цвет рамки по умолчанию -->
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            CornerRadius="20"
+            x:Name="ButtonBorder">
+                        <ContentPresenter HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
+
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation
+                        Storyboard.TargetName="ButtonBorder"
+                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                        To="#06021f" Duration="0:0:0.2"/>
+                                        <!-- Цвет при наведении -->
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation
+                        Storyboard.TargetName="ButtonBorder"
+                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                        To="#16103b" Duration="0:0:0.2"/>
+                                        <!-- Возвращение к исходному цвету -->
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#020012"/>
+                            <!-- Цвет при нажатии -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+
+    </Style>
 </ResourceDictionary>
