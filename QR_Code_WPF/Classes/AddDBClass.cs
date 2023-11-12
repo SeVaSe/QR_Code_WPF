@@ -63,25 +63,37 @@ namespace QR_Code_WPF.Classes
 
         public class RelayCommand : ICommand
         {
+            // Делегат для выполнения команды
             private readonly Action<object> _execute;
+
+            // Делегат для проверки, может ли команда быть выполнена
             private readonly Func<object, bool> _canExecute;
 
+            // Конструктор, принимающий делегат для выполнения команды и делегат для проверки возможности выполнения команды
             public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
             {
                 _execute = execute ?? throw new ArgumentNullException(nameof(execute));
                 _canExecute = canExecute;
             }
 
+            // Метод для проверки, может ли команда быть выполнена
             public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
 
+            // Метод для выполнения команды
             public void Execute(object parameter) => _execute(parameter);
 
+            // Событие, уведомляющее систему о том, что результат вызова метода CanExecute мог измениться,
+            // и следует переоценить, может ли команда быть выполнена
             public event EventHandler CanExecuteChanged
             {
+                // Добавление обработчика события к CommandManager.RequerySuggested
                 add { CommandManager.RequerySuggested += value; }
+
+                // Удаление обработчика события из CommandManager.RequerySuggested
                 remove { CommandManager.RequerySuggested -= value; }
             }
         }
+
 
     }
 

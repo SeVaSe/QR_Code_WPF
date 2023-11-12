@@ -119,12 +119,13 @@ namespace QR_Code_WPF
 
 
         
-
+        // открыть окно - создание QR
         private void CreateQr_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Вы уже находитесь в данном разделе", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        // открыть окно - список QR
         private void SpisoDBQR_Click(object sender, RoutedEventArgs e)
         {
             ListBDQr_Window QrWindow = new ListBDQr_Window();
@@ -159,8 +160,6 @@ namespace QR_Code_WPF
             {
                 MessageBox.Show("Публичный ключ не найден!", "Ошибка", MessageBoxButton.OK);
             }
-
-
         }
 
         string rrr = "*";
@@ -242,6 +241,8 @@ namespace QR_Code_WPF
 
                 count = 0;
 
+
+                // ВЫВОД ОШИБОК ПРИ СКАНИРОВАНИИ
                 if (result == null)
                 {
                     MessageBox.Show("QR-код не распознан!", "Ошибка", MessageBoxButton.OK);
@@ -323,6 +324,7 @@ namespace QR_Code_WPF
                         QRdbEntities db = new QRdbEntities();
                         DatabaseManager dbManager = new DatabaseManager(db);
                         dbManager.InsertQRCode(1, true, $"QROrdinaryK_{TxtBox_SaveName_Border1.Text}", DateTime.Now, filePath, 1);
+                        MessageBox.Show($"Был создан QR с подписью - QROrdinaryK_{TxtBox_SaveName_Border1.Text}");
                     }
                 }
                 else
@@ -357,6 +359,7 @@ namespace QR_Code_WPF
                     QRdbEntities db = new QRdbEntities();
                     DatabaseManager dbManager = new DatabaseManager(db);
                     dbManager.InsertQRCode(1, false, $"QROrdinaryNK_{TxtBox_SaveName_Border1.Text}", DateTime.Now, filePath, 1);
+                    MessageBox.Show($"Был создан QR без подписи - QROrdinaryNK_{TxtBox_SaveName_Border1.Text}");
                 }
 
                 TxtBox_Link_Border1.Clear();
@@ -422,7 +425,6 @@ namespace QR_Code_WPF
 
                         Bitmap qrCodeImage = qrCode.GetGraphic(20, qrColor, System.Drawing.Color.White, true);
 
-                        //************************ПРИДУМАТЬ СОХРАНЕНИЕ В НУЖНУЮ ПАПКУ*************************
                         string saveFolderPath = Path.Combine(Environment.CurrentDirectory, "SaveQR");
                         if (!Directory.Exists(saveFolderPath))
                         {
@@ -430,7 +432,6 @@ namespace QR_Code_WPF
                         }
                         string filePath = Path.Combine(saveFolderPath, $"QRColorK_{TxtBox_SaveName_Border2.Text}.png");
                         qrCodeImage.Save(filePath);
-                        //*************************************************
 
                         MemoryStream ms = new MemoryStream();
                         qrCodeImage.Save(ms, ImageFormat.Png);
@@ -447,6 +448,8 @@ namespace QR_Code_WPF
                         QRdbEntities db = new QRdbEntities();
                         DatabaseManager dbManager = new DatabaseManager(db);
                         dbManager.InsertQRCode(2, true, $"QRColorK_{TxtBox_SaveName_Border2.Text}", DateTime.Now, filePath, 1);
+
+                        MessageBox.Show($"Был создан QR с подписью - QRColorK_{TxtBox_SaveName_Border2.Text}");
                     }
                 }
                 else
@@ -487,6 +490,8 @@ namespace QR_Code_WPF
                     QRdbEntities db = new QRdbEntities();
                     DatabaseManager dbManager = new DatabaseManager(db);
                     dbManager.InsertQRCode(2, false, $"QRColorNK_{TxtBox_SaveName_Border2.Text}", DateTime.Now, filePath, 1);
+
+                    MessageBox.Show($"Был создан QR без подписи - QRColorNK_{TxtBox_SaveName_Border2.Text}");
                 }
                 selectedColor = System.Windows.Media.Colors.Black; // Инициализация выбранного цвета черным цветом или любым другим значением по умолчанию
 
@@ -609,7 +614,7 @@ namespace QR_Code_WPF
                             dbManager.InsertQRCode(3, true, $"QREccK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
                         }
 
-
+                        MessageBox.Show($"Был создан QR с подписью - QREccK_{TxtBox_SaveName_Border3.Text}");
                     }
                 }
                 else
@@ -692,6 +697,8 @@ namespace QR_Code_WPF
                         DatabaseManager dbManager = new DatabaseManager(db);
                         dbManager.InsertQRCode(3, false, $"QREccNK_{TxtBox_SaveName_Border3.Text}", DateTime.Now, filePath, 1);
                     }
+
+                    MessageBox.Show($"Был создан QR без подписи - QREccNK_{TxtBox_SaveName_Border3.Text}");
                 }
 
                 TxtBox_Link_Border3.Clear();
@@ -701,13 +708,6 @@ namespace QR_Code_WPF
             {
                 MessageBox.Show("Заполните все нужные поля, для построения QR-Code!", "Ошибка! Не все поля заполнены", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-
         }
-
-
-        
-
-
     }
 }

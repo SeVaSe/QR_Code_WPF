@@ -4,7 +4,7 @@
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonBorder1">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Синий цвет по умолчанию -->
+        <!-- цвет по умолчанию -->
         <Setter Property="Background" Value="#18133b"/>
         <!-- Белый цвет текста по умолчанию -->
         <Setter Property="Foreground" Value="White"/>
@@ -68,7 +68,7 @@
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonBorder2">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Синий цвет по умолчанию -->
+        <!-- цвет по умолчанию -->
         <Setter Property="Background" Value="#400d2e"/>
         <!-- Белый цвет текста по умолчанию -->
         <Setter Property="Foreground" Value="White"/>
@@ -132,7 +132,7 @@
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonChooseColor">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Синий цвет по умолчанию -->
+        <!-- цвет по умолчанию -->
         <Setter Property="Background" Value="#b30246"/>
         <!-- Белый цвет текста по умолчанию -->
         <Setter Property="Foreground" Value="White"/>
@@ -197,7 +197,7 @@
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonECC">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Синий цвет по умолчанию -->
+        <!-- цвет по умолчанию -->
         <Setter Property="Background" Value="#16103b"/>
         <!-- Белый цвет текста по умолчанию -->
         <Setter Property="Foreground" Value="White"/>
@@ -260,11 +260,8 @@
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonScan">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Default gray background -->
         <Setter Property="Background" Value="#016392"/>
-        <!-- White text color by default -->
         <Setter Property="Foreground" Value="White"/>
-        <!-- Default border color -->
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
@@ -343,10 +340,11 @@
 
 
 
+    <!--Создание для кнопки удалить-->
     <Style TargetType="{x:Type Button}" x:Key="ModernButtonQRBDFull">
         <Setter Property="Padding" Value="10,5"/>
         <Setter Property="Margin" Value="5"/>
-        <!-- Синий цвет по умолчанию -->
+        <!-- цвет по умолчанию -->
         <Setter Property="Background" Value="#16103b"/>
         <!-- Белый цвет текста по умолчанию -->
         <Setter Property="Foreground" Value="White"/>

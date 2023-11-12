@@ -26,14 +26,8 @@ namespace QR_Code_WPF.WindowPage
             LoadQRData();
             DataContext = this;
 
-            // Инициализируйте вашу команду сканирования (ScanCommand) здесь
             ScanCommand = new RelayCommand(ScanExecute, CanScanExecute);
 
-        }
-
-        private void Visit_QR_Click(object sender, RoutedEventArgs e)
-        {
-            //открыть окно с показром всех QR
         }
 
         //Свернуть
@@ -121,7 +115,7 @@ namespace QR_Code_WPF.WindowPage
 
 
 
-
+        // открыть окно по созданию QR
         private void CreateQr_Click(object sender, RoutedEventArgs e)
         {
             Window main = new MainWindow();
@@ -129,6 +123,7 @@ namespace QR_Code_WPF.WindowPage
             this.Close();
         }
 
+        // открыть окно по списку QR
         private void SpisoDBQR_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Вы уже находитесь в данном разделе", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -148,13 +143,9 @@ namespace QR_Code_WPF.WindowPage
             public DateTime CreationDate { get; set; }
             public string HasSignature { get; set; }
             public string ImagePath { get; set; }
-
-
-
-
         }
 
-
+        // методы данных из БД (в виде объектов QRViewModel) будут отображены в пользовательском интерфейсе ScrollVieverQRDB 
         private void LoadQRData()
         {
             using (var dbContext = new QRdbEntities())
@@ -177,12 +168,7 @@ namespace QR_Code_WPF.WindowPage
         }
 
 
-
-
-
-
-
-        //КНОПКА ДЛЯ УДАЛЕНИЯ QR
+        // КОМАНДА ДЛЯ УДАЛЕНИЯ QR
         private RelayCommand _deleteCommand;
 
         public ICommand DeleteCommand
@@ -200,11 +186,13 @@ namespace QR_Code_WPF.WindowPage
             }
         }
 
+        // Метод, определяющий, может ли команда быть выполнена
         private bool CanDeleteCommandExecute(object parameter)
         {
-            return true; // Здесь можно добавить условия, при которых команда будет доступна или недоступна
+            return true; 
         }
 
+        // Метод, выполняющий действие при выполнении команды удаления
         private void DeleteCommandExecute(object parameter)
         {
             if (parameter is QRViewModel qrViewModel)
@@ -215,7 +203,7 @@ namespace QR_Code_WPF.WindowPage
             }
         }
 
-
+        // Метод для удаления QR-кода из базы данных
         public void DeleteQRCode(int qrCodeId)
         {
             using (var dbContext = new QRdbEntities())
@@ -230,14 +218,10 @@ namespace QR_Code_WPF.WindowPage
         }
 
 
-
-
-
-
-
         // СКАНИРОВАНИЕ QR
         bool wrongVerify = false;
 
+        // Метод для проверки подписи QR-кода
         private bool VerifySignature(string data, string signature)
         {
             string publicKeyPath = System.IO.Path.Combine(Environment.CurrentDirectory, "KeyFolder\\publicKey.xml");
@@ -259,13 +243,10 @@ namespace QR_Code_WPF.WindowPage
         }
 
 
-
-
-
-
-
+        // КОМАНДА ДЛЯ СКАНИРОВАНИЯ QR
         public ICommand ScanCommand { get; }
 
+        // Обработчик события нажатия на Border (визуальный элемент, представляющий QR-код)
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var border = (Border)sender;
@@ -273,6 +254,7 @@ namespace QR_Code_WPF.WindowPage
             ScanExecute(qrCodeViewModel.ImagePath);
         }
 
+        // Метод для выполнения сканирования QR-кода
         private void ScanExecute(object parameter)
         {
             if (parameter is string imagePath)
@@ -329,12 +311,12 @@ namespace QR_Code_WPF.WindowPage
             }
         }
 
-
-
+        // Метод, определяющий, может ли быть выполнена команда сканирования
         private bool CanScanExecute(object parameter)
         {
             return true;
         }
+
 
 
 

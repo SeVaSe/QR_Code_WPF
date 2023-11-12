@@ -450,19 +450,9 @@
                                             </StackPanel>
                                         </StackPanel>
                                         <Slider x:Name="Slider_BorderECC" ToolTip="ECC защита" Margin="5,37,5,21" Minimum="0" Maximum="3" IsSnapToTickEnabled="True" Ticks="0 1 2 3" Grid.Column="1"/>
-
-
-
-
-
-
-
                                     </Grid>
                                 </Grid>
                             </Grid>
-
-
-
                         </Border>
                     </StackPanel>
                 </ScrollViewer>
@@ -476,26 +466,15 @@
 
                     <Image Margin="10" Name="qrCodeImageElement"/>
                 </Border>
-
-
-
-
-
             </Grid>
             <Grid Grid.Row="1">
                 <TextBlock Text="Ваш QR" Style="{StaticResource ModernTextBlock}" Margin="548,21,130,375"
                        FontSize="30" FontWeight="Bold" >
-
                     <TextBlock.Effect>
                         <DropShadowEffect Color="#caa6f5" ShadowDepth="0" BlurRadius="10"/>
                     </TextBlock.Effect>
                 </TextBlock>
             </Grid>
-
-
-
-
-
         </Grid>
     </Border>
 
