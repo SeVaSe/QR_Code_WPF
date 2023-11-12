@@ -148,22 +148,29 @@ namespace QR_Code_WPF.WindowPage
         // методы данных из БД (в виде объектов QRViewModel) будут отображены в пользовательском интерфейсе ScrollVieverQRDB 
         private void LoadQRData()
         {
-            using (var dbContext = new QRdbEntities())
+            try
             {
-                var qrViewModels = dbContext.QRCode
-                    .Select(q => new QRViewModel
-                    {
-                        QRCodeID = q.QRCodeID,
-                        QRName = q.QRCodeName,
-                        QRType = q.QRType.TypeName,
-                        ECCLevel = q.ErrorCorrectionLevel.LevelName,
-                        CreationDate = q.CreationDate,
-                        HasSignature = q.HasSignature ? "Да" : "Нет",
-                        ImagePath = q.PhotoPath
-                    })
-                    .ToList();
+                using (var dbContext = new QRdbEntities())
+                {
+                    var qrViewModels = dbContext.QRCode
+                        .Select(q => new QRViewModel
+                        {
+                            QRCodeID = q.QRCodeID,
+                            QRName = q.QRCodeName,
+                            QRType = q.QRType.TypeName,
+                            ECCLevel = q.ErrorCorrectionLevel.LevelName,
+                            CreationDate = q.CreationDate,
+                            HasSignature = q.HasSignature ? "Да" : "Нет",
+                            ImagePath = q.PhotoPath
+                        })
+                        .ToList();
 
-                ScrollVieverQRDB.DataContext = qrViewModels;
+                    ScrollVieverQRDB.DataContext = qrViewModels;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Произошла не предвиденная ошибка! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -195,25 +202,43 @@ namespace QR_Code_WPF.WindowPage
         // Метод, выполняющий действие при выполнении команды удаления
         private void DeleteCommandExecute(object parameter)
         {
-            if (parameter is QRViewModel qrViewModel)
+            try
             {
-                DeleteQRCode(qrViewModel.QRCodeID);
-                LoadQRData(); // Обновляем данные после удаления
-                MessageBox.Show($"Удален QR - {qrViewModel.QRName}", "Удаление QR", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (parameter is QRViewModel qrViewModel)
+                {
+                    DeleteQRCode(qrViewModel.QRCodeID);
+                    LoadQRData(); // Обновляем данные после удаления
+                    MessageBox.Show($"Удален QR - {qrViewModel.QRName}", "Удаление QR", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Такого QR не существует! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Произошла не предвиденная ошибка! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // Метод для удаления QR-кода из базы данных
         public void DeleteQRCode(int qrCodeId)
         {
-            using (var dbContext = new QRdbEntities())
+            try
             {
-                var qrCode = dbContext.QRCode.FirstOrDefault(q => q.QRCodeID == qrCodeId);
-                if (qrCode != null)
+                using (var dbContext = new QRdbEntities())
                 {
-                    dbContext.QRCode.Remove(qrCode);
-                    dbContext.SaveChanges();
+                    var qrCode = dbContext.QRCode.FirstOrDefault(q => q.QRCodeID == qrCodeId);
+                    if (qrCode != null)
+                    {
+                        dbContext.QRCode.Remove(qrCode);
+                        dbContext.SaveChanges();
+                    }
                 }
+            }
+            catch
+            {
+                MessageBox.Show("Произошла не предвиденная ошибка! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -249,65 +274,79 @@ namespace QR_Code_WPF.WindowPage
         // Обработчик события нажатия на Border (визуальный элемент, представляющий QR-код)
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var border = (Border)sender;
-            var qrCodeViewModel = (QRViewModel)border.DataContext;
-            ScanExecute(qrCodeViewModel.ImagePath);
+            try
+            {
+                var border = (Border)sender;
+                var qrCodeViewModel = (QRViewModel)border.DataContext;
+                ScanExecute(qrCodeViewModel.ImagePath);
+            }
+            catch
+            {
+                MessageBox.Show("Произошла не предвиденная ошибка! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }   
         }
 
         // Метод для выполнения сканирования QR-кода
         private void ScanExecute(object parameter)
         {
-            if (parameter is string imagePath)
+            try
             {
-                if (string.IsNullOrEmpty(imagePath))
+                if (parameter is string imagePath)
                 {
-                    MessageBox.Show("Путь к изображению не указан!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                MessageBox.Show($"Сканирование QR-кода на изображении: {imagePath}", "Идет сканирование...", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                try
-                {
-                    Bitmap qrCodeBitmap = new Bitmap(imagePath);
-                    BarcodeReader reader = new BarcodeReader();
-                    Result result = reader.Decode(qrCodeBitmap);
-
-                    if (result != null)
+                    if (string.IsNullOrEmpty(imagePath))
                     {
-                        string qrData = result.Text;
+                        MessageBox.Show("Путь к изображению не указан!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
 
-                        string[] parts = qrData.Split(';');
-                        string data = parts[0];
+                    MessageBox.Show($"Сканирование QR-кода на изображении: {imagePath}", "Идет сканирование...", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                        if (parts.Length > 1)
+                    try
+                    {
+                        Bitmap qrCodeBitmap = new Bitmap(imagePath);
+                        BarcodeReader reader = new BarcodeReader();
+                        Result result = reader.Decode(qrCodeBitmap);
+
+                        if (result != null)
                         {
-                            string signature = parts[1];
-                            if (VerifySignature(data, signature))
+                            string qrData = result.Text;
+
+                            string[] parts = qrData.Split(';');
+                            string data = parts[0];
+
+                            if (parts.Length > 1)
+                            {
+                                string signature = parts[1];
+                                if (VerifySignature(data, signature))
+                                {
+                                    Process.Start(data);
+                                    MessageBox.Show($"QR-код успешно обработан. Будет открыта ссылка: {data}", "Успешный скан", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Проверьте свое подключение к интернету!", "Ошибка с подключением", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
+                            else
                             {
                                 Process.Start(data);
                                 MessageBox.Show($"QR-код успешно обработан. Будет открыта ссылка: {data}", "Успешный скан", MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-                            else
-                            {
-                                MessageBox.Show("Проверьте свое подключение к интернету!", "Ошибка с подключением", MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
                         }
                         else
                         {
-                            Process.Start(data);
-                            MessageBox.Show($"QR-код успешно обработан. Будет открыта ссылка: {data}", "Успешный скан", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("QR-код не распознан!", "Ошибка сканирования", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("QR-код не распознан!", "Ошибка сканирования", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Исключение при обработке QR-кода: {ex.Message}", "Не предвиденное исключение", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Исключение при обработке QR-кода: {ex.Message}", "Не предвиденное исключение", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+            }
+            catch
+            {
+                MessageBox.Show("Произошла не предвиденная ошибка! Попробуйте заново", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -316,14 +355,5 @@ namespace QR_Code_WPF.WindowPage
         {
             return true;
         }
-
-
-
-
-
-
-
-
-
     }
 }
